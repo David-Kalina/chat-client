@@ -9,10 +9,11 @@ export interface ChatMessageInterface {
 function ChatMessage({ message, isMine }: ChatMessageInterface) {
   return (
     <Box
+      textAlign={isMine ? 'right' : 'left'}
       mt="1rem"
-      minW="150px"
-      p="2"
-      bg={isMine ? 'blue.300' : 'gray.300'}
+      minW="50px"
+      p="0.5rem 1rem 0.5rem 1rem"
+      bg={isMine ? '#387aff' : '#27292e'}
       borderRadius={isMine ? '20px 0px 20px 20px' : '0px 20px 20px 20px'}
     >
       {message}

@@ -5,7 +5,7 @@ import ChatMessage from './ChatMessage'
 
 function ChannelChat() {
   return (
-    <VStack border="4px solid blue" w="80%" mx="auto" align="flex-end" px={32}>
+    <VStack w="90%" mx="auto" align="flex-end" px={32}>
       <ChatBlock isMine={true} messages={[]} />
       <ChatBlock isMine={false} messages={[]} />
       <ChatBlock isMine={true} messages={[]} />
