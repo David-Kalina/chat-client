@@ -8,7 +8,7 @@ interface ServerProps {
 }
 
 function Server({ server }: ServerProps) {
-  const { setServerId } = useServer()
+  const { setServerId, serverId } = useServer()
 
   const [mutation, _] = useConnectToServerMutation()
 
@@ -22,7 +22,13 @@ function Server({ server }: ServerProps) {
   }
 
   return (
-    <Flex onClick={connectToServer} w="14" h="14" borderRadius="md" border="1px solid yellow">
+    <Flex
+      onClick={connectToServer}
+      w="14"
+      h="14"
+      borderRadius="md"
+      border={server.serverId === serverId ? '1px solid yellow' : '1px solid red'}
+    >
       {server.name}
     </Flex>
   )

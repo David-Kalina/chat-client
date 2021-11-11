@@ -14,7 +14,7 @@ import {
 } from '@chakra-ui/react'
 import React from 'react'
 import { useServer } from '../contexts/ServerContext'
-import { CreateChannelInput, useCreateChannelMutation } from '../generated/graphql'
+import { Channel, CreateChannelInput, useCreateChannelMutation } from '../generated/graphql'
 
 interface CreateChannelProps {
   isOpen: boolean
@@ -37,8 +37,11 @@ function CreateChannel({ isOpen, onClose }: CreateChannelProps) {
         cache.modify({
           fields: {
             channels(existingChannels, { readField }) {
-              const newChannel = readField('createChannel', mutation!)
-              return [...existingChannels, newChannel]
+              const newChannel: Channel = readField('createChannel', mutation!)!
+              const currentChannels = existingChannels.filter(
+                (c: Channel) => c.serverReferenceId === newChannel.serverReferenceId
+              )
+              return [...currentChannels, newChannel]
             },
           },
         })
@@ -47,8 +50,6 @@ function CreateChannel({ isOpen, onClose }: CreateChannelProps) {
         }
       },
     })
-
-    console.l
   }
 
   return (

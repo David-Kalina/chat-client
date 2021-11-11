@@ -3,13 +3,13 @@ import React from 'react'
 import ChannelChatWindow from './ChannelChatWindow'
 import ChannelDetails from './ChannelDetails'
 import ChannelNavigation from './ChannelNavigation'
-import ChannelServerList from './ChannelServerList'
+import ChannelServerList from './ServerList'
 import CreateServer from './CreateServer'
 
 function Layout() {
   return (
     <Grid
-      templateColumns="150px 2fr 4fr 1fr"
+      templateColumns="150px 1fr 3fr 1fr"
       gap={0}
       templateRows="1fr"
       h="100vh"

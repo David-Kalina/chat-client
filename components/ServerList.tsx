@@ -5,7 +5,7 @@ import { useServersQuery } from '../generated/graphql'
 import AddServer from './AddServer'
 import Server from './Server'
 
-function ChannelServerList() {
+function ServerList() {
   const { loading, error, data } = useServersQuery()
   const { setServerId } = useServer()
 
@@ -14,7 +14,7 @@ function ChannelServerList() {
       setServerId(data.servers[0].id)
     }
   }, [data, setServerId, loading])
-  
+
   return (
     <GridItem bg="#1c1e1f">
       {!loading && !error && data ? (
@@ -39,4 +39,4 @@ function ChannelServerList() {
   )
 }
 
-export default ChannelServerList
+export default ServerList

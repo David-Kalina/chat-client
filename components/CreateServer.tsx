@@ -13,6 +13,7 @@ import {
   VStack,
 } from '@chakra-ui/react'
 import React from 'react'
+import { useServer } from '../contexts/ServerContext'
 import { useCreateServerMutation } from '../generated/graphql'
 
 interface CreateServerProps {
@@ -22,6 +23,7 @@ interface CreateServerProps {
 
 function CreateServer({ isOpen, onClose }: CreateServerProps) {
   const [name, setName] = React.useState('')
+  const { setServerId } = useServer()
   const [mutation, _] = useCreateServerMutation()
 
   const submit = async () => {
@@ -37,11 +39,12 @@ function CreateServer({ isOpen, onClose }: CreateServerProps) {
               },
             },
           })
-          if (response?.data?.createServer) {
-            onClose()
-          }
         },
       })
+      if (response.data?.createServer.serverId!) {
+        onClose()
+        setServerId(response?.data?.createServer?.serverId)
+      }
     }
   }
 

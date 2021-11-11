@@ -1,0 +1,3 @@
+mutation ConnectToChannel($channelId: String!) {
+  connectToChannel(channelId: $channelId)
+}

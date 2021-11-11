@@ -20,7 +20,7 @@ export type Channel = {
   description: Scalars['String'];
   id: Scalars['ID'];
   name: Scalars['String'];
-  serverId: Scalars['String'];
+  serverReferenceId: Scalars['String'];
 };
 
 export type CreateChannelInput = {
@@ -51,11 +51,17 @@ export type LoginInput = {
 
 export type Mutation = {
   __typename?: 'Mutation';
+  connectToChannel: Scalars['String'];
   connectToServer: Scalars['String'];
   createChannel: Channel;
   createServer: Server;
   login: GlobalUser;
   register: GlobalUser;
+};
+
+
+export type MutationConnectToChannelArgs = {
+  channelId: Scalars['String'];
 };
 
 
@@ -85,9 +91,20 @@ export type MutationRegisterArgs = {
 
 export type Query = {
   __typename?: 'Query';
+  channel: Channel;
   channels: Array<Channel>;
   hello: Scalars['String'];
   servers: Array<Server>;
+};
+
+
+export type QueryChannelArgs = {
+  channelId: Scalars['String'];
+};
+
+
+export type QueryChannelsArgs = {
+  serverReferenceId: Scalars['String'];
 };
 
 export type RegisterInput = {
@@ -104,6 +121,13 @@ export type Server = {
   serverId: Scalars['String'];
 };
 
+export type ConnectToChannelMutationVariables = Exact<{
+  channelId: Scalars['String'];
+}>;
+
+
+export type ConnectToChannelMutation = { __typename?: 'Mutation', connectToChannel: string };
+
 export type ConnectToServerMutationVariables = Exact<{
   serverId: Scalars['String'];
 }>;
@@ -116,7 +140,7 @@ export type CreateChannelMutationVariables = Exact<{
 }>;
 
 
-export type CreateChannelMutation = { __typename?: 'Mutation', createChannel: { __typename?: 'Channel', id: string, channelId: string, name: string, description: string } };
+export type CreateChannelMutation = { __typename?: 'Mutation', createChannel: { __typename?: 'Channel', id: string, channelId: string, serverReferenceId: string, name: string, description: string } };
 
 export type CreateServerMutationVariables = Exact<{
   options: CreateServerInput;
@@ -132,10 +156,19 @@ export type RegisterMutationVariables = Exact<{
 
 export type RegisterMutation = { __typename?: 'Mutation', register: { __typename?: 'GlobalUser', email: string, firstName: string, lastName: string, profileURL: string, globalUserId: string } };
 
-export type ChannelsQueryVariables = Exact<{ [key: string]: never; }>;
+export type ChannelQueryVariables = Exact<{
+  channelId: Scalars['String'];
+}>;
 
 
-export type ChannelsQuery = { __typename?: 'Query', channels: Array<{ __typename?: 'Channel', name: string, id: string, channelId: string, description: string }> };
+export type ChannelQuery = { __typename?: 'Query', channel: { __typename?: 'Channel', id: string, serverReferenceId: string, channelId: string, name: string, description: string } };
+
+export type ChannelsQueryVariables = Exact<{
+  serverReferenceId: Scalars['String'];
+}>;
+
+
+export type ChannelsQuery = { __typename?: 'Query', channels: Array<{ __typename?: 'Channel', name: string, id: string, channelId: string, description: string, serverReferenceId: string }> };
 
 export type ServersQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -143,6 +176,37 @@ export type ServersQueryVariables = Exact<{ [key: string]: never; }>;
 export type ServersQuery = { __typename?: 'Query', servers: Array<{ __typename?: 'Server', name: string, id: string, serverId: string }> };
 
 
+export const ConnectToChannelDocument = gql`
+    mutation ConnectToChannel($channelId: String!) {
+  connectToChannel(channelId: $channelId)
+}
+    `;
+export type ConnectToChannelMutationFn = Apollo.MutationFunction<ConnectToChannelMutation, ConnectToChannelMutationVariables>;
+
+/**
+ * __useConnectToChannelMutation__
+ *
+ * To run a mutation, you first call `useConnectToChannelMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useConnectToChannelMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [connectToChannelMutation, { data, loading, error }] = useConnectToChannelMutation({
+ *   variables: {
+ *      channelId: // value for 'channelId'
+ *   },
+ * });
+ */
+export function useConnectToChannelMutation(baseOptions?: Apollo.MutationHookOptions<ConnectToChannelMutation, ConnectToChannelMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<ConnectToChannelMutation, ConnectToChannelMutationVariables>(ConnectToChannelDocument, options);
+      }
+export type ConnectToChannelMutationHookResult = ReturnType<typeof useConnectToChannelMutation>;
+export type ConnectToChannelMutationResult = Apollo.MutationResult<ConnectToChannelMutation>;
+export type ConnectToChannelMutationOptions = Apollo.BaseMutationOptions<ConnectToChannelMutation, ConnectToChannelMutationVariables>;
 export const ConnectToServerDocument = gql`
     mutation ConnectToServer($serverId: String!) {
   connectToServer(serverId: $serverId)
@@ -179,6 +243,7 @@ export const CreateChannelDocument = gql`
   createChannel(options: $options) {
     id
     channelId
+    serverReferenceId
     name
     description
   }
@@ -282,13 +347,53 @@ export function useRegisterMutation(baseOptions?: Apollo.MutationHookOptions<Reg
 export type RegisterMutationHookResult = ReturnType<typeof useRegisterMutation>;
 export type RegisterMutationResult = Apollo.MutationResult<RegisterMutation>;
 export type RegisterMutationOptions = Apollo.BaseMutationOptions<RegisterMutation, RegisterMutationVariables>;
+export const ChannelDocument = gql`
+    query Channel($channelId: String!) {
+  channel(channelId: $channelId) {
+    id
+    serverReferenceId
+    channelId
+    name
+    description
+  }
+}
+    `;
+
+/**
+ * __useChannelQuery__
+ *
+ * To run a query within a React component, call `useChannelQuery` and pass it any options that fit your needs.
+ * When your component renders, `useChannelQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useChannelQuery({
+ *   variables: {
+ *      channelId: // value for 'channelId'
+ *   },
+ * });
+ */
+export function useChannelQuery(baseOptions: Apollo.QueryHookOptions<ChannelQuery, ChannelQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<ChannelQuery, ChannelQueryVariables>(ChannelDocument, options);
+      }
+export function useChannelLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<ChannelQuery, ChannelQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<ChannelQuery, ChannelQueryVariables>(ChannelDocument, options);
+        }
+export type ChannelQueryHookResult = ReturnType<typeof useChannelQuery>;
+export type ChannelLazyQueryHookResult = ReturnType<typeof useChannelLazyQuery>;
+export type ChannelQueryResult = Apollo.QueryResult<ChannelQuery, ChannelQueryVariables>;
 export const ChannelsDocument = gql`
-    query Channels {
-  channels {
+    query Channels($serverReferenceId: String!) {
+  channels(serverReferenceId: $serverReferenceId) {
     name
     id
     channelId
     description
+    serverReferenceId
   }
 }
     `;
@@ -305,10 +410,11 @@ export const ChannelsDocument = gql`
  * @example
  * const { data, loading, error } = useChannelsQuery({
  *   variables: {
+ *      serverReferenceId: // value for 'serverReferenceId'
  *   },
  * });
  */
-export function useChannelsQuery(baseOptions?: Apollo.QueryHookOptions<ChannelsQuery, ChannelsQueryVariables>) {
+export function useChannelsQuery(baseOptions: Apollo.QueryHookOptions<ChannelsQuery, ChannelsQueryVariables>) {
         const options = {...defaultOptions, ...baseOptions}
         return Apollo.useQuery<ChannelsQuery, ChannelsQueryVariables>(ChannelsDocument, options);
       }

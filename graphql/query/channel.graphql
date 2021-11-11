@@ -1,0 +1,9 @@
+query Channel($channelId: String!) {
+  channel(channelId: $channelId) {
+    id
+    serverReferenceId
+    channelId
+    name
+    description
+  }
+}

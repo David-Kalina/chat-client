@@ -4,7 +4,7 @@ import AddChannel from './AddChannel'
 import AddServer from './AddServer'
 import ProfileCard from './ProfileCard'
 import Search from './Search'
-import ServerBlock from './ServerBlock'
+import ChannelBlock from './ChannelBlock'
 
 function ChannelNavigation() {
   return (
@@ -13,8 +13,7 @@ function ChannelNavigation() {
         <Search />
         <ProfileCard />
         <AddChannel />
-        <ServerBlock />
-        <ServerBlock />
+        <ChannelBlock />
       </VStack>
     </GridItem>
   )
