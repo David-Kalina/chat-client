@@ -1,0 +1,3 @@
+mutation ConnectToServer($serverId: String!) {
+  connectToServer(serverId: $serverId)
+}

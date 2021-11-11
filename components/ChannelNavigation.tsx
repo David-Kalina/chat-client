@@ -1,5 +1,7 @@
 import { GridItem, VStack } from '@chakra-ui/layout'
 import React from 'react'
+import AddChannel from './AddChannel'
+import AddServer from './AddServer'
 import ProfileCard from './ProfileCard'
 import Search from './Search'
 import ServerBlock from './ServerBlock'
@@ -10,6 +12,7 @@ function ChannelNavigation() {
       <VStack align="start" spacing="6">
         <Search />
         <ProfileCard />
+        <AddChannel />
         <ServerBlock />
         <ServerBlock />
       </VStack>
