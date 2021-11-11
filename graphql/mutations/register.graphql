@@ -1,0 +1,9 @@
+mutation Register($options: RegisterInput!) {
+  register(options: $options) {
+    email
+    firstName
+    lastName
+    profileURL
+    globalUserId
+  }
+}

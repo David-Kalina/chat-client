@@ -4,6 +4,7 @@ import ChannelChatWindow from './ChannelChatWindow'
 import ChannelDetails from './ChannelDetails'
 import ChannelNavigation from './ChannelNavigation'
 import ChannelServerList from './ChannelServerList'
+import CreateServer from './CreateServer'
 
 function Layout() {
   return (
