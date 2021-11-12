@@ -6,7 +6,7 @@ import { useChannelsQuery } from '../generated/graphql'
 import Channel from './Channel'
 
 function ChannelBlock() {
-  const [isOpen, setIsOpen] = React.useState(false)
+  const [isOpen, setIsOpen] = React.useState(true)
   const { setChannelId, serverId } = useServer()
   const { data, loading, error } = useChannelsQuery({ variables: { serverReferenceId: serverId } })
 
@@ -19,14 +19,14 @@ function ChannelBlock() {
   return (
     <Box w="100%">
       <Flex align="center">
-        {isOpen || !!data?.channels?.length ? (
+        {isOpen && !!data?.channels?.length ? (
           <FaChevronDown onClick={() => setIsOpen(!isOpen)} />
         ) : (
           <FaChevronUp onClick={() => setIsOpen(!isOpen)} />
         )}
         <Text ml="1rem">CHANNEL</Text>
       </Flex>
-      <Collapse startingHeight={0} in={isOpen || !!data?.channels?.length}>
+      <Collapse startingHeight={0} in={isOpen && !!data?.channels?.length}>
         <VStack align="start" spacing={4} alignItems="stretch" mt="1rem">
           {data?.channels?.map(channel => (
             <Channel key={channel.channelId} channel={channel} />

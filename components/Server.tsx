@@ -23,6 +23,8 @@ function Server({ server }: ServerProps) {
 
   return (
     <Flex
+      align="center"
+      justify="center"
       onClick={connectToServer}
       w="14"
       h="14"

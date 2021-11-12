@@ -1,16 +1,30 @@
-import { Flex, Badge, Text } from '@chakra-ui/react'
+import { Box, Flex, Text } from '@chakra-ui/react'
 import React from 'react'
 import { FaCircle } from 'react-icons/fa'
 import { useServer } from '../contexts/ServerContext'
 import { Channel, useConnectToChannelMutation } from '../generated/graphql'
+import useToggle from '../hooks/useHook'
+import EditChannel from './EditChannel'
+import InviteUser from './InviteUser'
 
 interface Props {
   channel: Channel
 }
 
 function Channel({ channel }: Props) {
+  const [isEditOpen, setEditToggle] = useToggle(false)
+  const [isInviteOpen, setInviteToggle] = useToggle(false)
+
+  const onCloseEdit = () => {
+    setEditToggle(false)
+  }
+
+  const onCloseInvite = () => {
+    setInviteToggle(false)
+  }
+
   const [mutation, _] = useConnectToChannelMutation()
-  const { setChannelId } = useServer()
+  const { setChannelId, channelId } = useServer()
 
   const connectToChannel = async () => {
     const response = await mutation({
@@ -25,11 +39,12 @@ function Channel({ channel }: Props) {
     <Flex
       onClick={connectToChannel}
       h="40px"
-      p="8px"
+      bg={channel.channelId === channelId ? '#27292d' : undefined}
+      p="12px"
       align="center"
       justify="space-between"
+      borderRadius="md"
       key={channel.id}
-      border="1px solid red"
     >
       <Flex align="center">
         <FaCircle />
@@ -37,7 +52,14 @@ function Channel({ channel }: Props) {
           {channel.name}
         </Text>
       </Flex>
-      <Badge>{10}</Badge>
+      <Flex>
+        <Box onClick={() => setEditToggle(!isEditOpen)}>
+          <EditChannel isOpen={isEditOpen} onClose={onCloseEdit} />
+        </Box>
+        <Box ml="1rem" onClick={() => setInviteToggle(!isInviteOpen)}>
+          <InviteUser isOpen={isInviteOpen} onClose={onCloseInvite} />
+        </Box>
+      </Flex>
     </Flex>
   )
 }

@@ -11,7 +11,7 @@ function ServerList() {
 
   React.useEffect(() => {
     if (data && !loading && data?.servers?.length > 0) {
-      setServerId(data.servers[0].id)
+      setServerId(data.servers[0].serverId)
     }
   }, [data, setServerId, loading])
 
