@@ -1,4 +1,4 @@
-import { Flex, GridItem, VStack, Text, Badge } from '@chakra-ui/layout'
+import { Flex, GridItem, VStack, Text, Badge, Box } from '@chakra-ui/layout'
 import React from 'react'
 import AddChannel from './AddChannel'
 import AddServer from './AddServer'
@@ -7,8 +7,17 @@ import Search from './Search'
 import ChannelBlock from './ChannelBlock'
 import { FiUser } from 'react-icons/fi'
 import { FaCog } from 'react-icons/fa'
+import ServerSettings from './ServerSettings'
+import useToggle from '../hooks/useHook'
+import ServerMenu from './ServerSettings'
 
 function ChannelNavigation() {
+  const [isOpen, toggle] = useToggle(false)
+
+  const onClose = () => {
+    toggle(false)
+  }
+
   return (
     <GridItem py="2rem" px="3rem" bg="#181a1b">
       <VStack align="start" spacing="6">
@@ -19,10 +28,7 @@ function ChannelNavigation() {
             <FiUser />
             <Text ml="1rem">Members</Text>
           </Flex>
-          <Flex align="center">
-            <FaCog />
-            <Text ml="1rem">Settings</Text>
-          </Flex>
+          <ServerMenu />
         </VStack>
         <AddChannel />
         <ChannelBlock />
