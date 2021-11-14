@@ -1,21 +1,16 @@
-import { IconButton } from '@chakra-ui/button'
-import { Menu, MenuButton, MenuList, MenuItem } from '@chakra-ui/menu'
-import { Box, Flex, Text } from '@chakra-ui/react'
+import { Menu, MenuButton, MenuItem, MenuList } from '@chakra-ui/menu'
+import { Flex } from '@chakra-ui/react'
 import React from 'react'
-import { FaCog, FaEllipsisH } from 'react-icons/fa'
-import { useSetOnlineStatusMutation } from '../generated/graphql'
-import Logout from './Logout'
+import { FaCog } from 'react-icons/fa'
+import { useLeaveServerMutation, useSetOnlineStatusMutation } from '../generated/graphql'
 
 function ServerMenu() {
-  const [mutation, _] = useSetOnlineStatusMutation()
+  const [mutation, _] = useLeaveServerMutation()
 
-  const updateOnlineStatus = async (onlineStatus: string) => {
+  const leaveServer = async () => {
     await mutation({
-      variables: {
-        onlineStatus,
-      },
-      update: cache => {
-        cache.evict({ fieldName: 'getOnlineStatus' })
+      update(cache) {
+        cache.evict({ fieldName: 'servers' })
       },
     })
   }
@@ -27,6 +22,7 @@ function ServerMenu() {
         <MenuButton ml="1rem">Settings</MenuButton>
         <MenuList>
           <MenuItem>Delete Server</MenuItem>
+          <MenuItem onClick={leaveServer}>Leave Server</MenuItem>
         </MenuList>
       </Menu>
     </Flex>

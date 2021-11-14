@@ -57,7 +57,9 @@ export type Mutation = {
   connectToServer: Server;
   createChannel: Channel;
   createServer: Server;
+  deleteServer: Scalars['Boolean'];
   joinServer: Scalars['Boolean'];
+  leaveServer: Scalars['Boolean'];
   login: GlobalUser;
   logout: Scalars['Boolean'];
   register: GlobalUser;
@@ -82,6 +84,11 @@ export type MutationCreateChannelArgs = {
 
 export type MutationCreateServerArgs = {
   options: CreateServerInput;
+};
+
+
+export type MutationDeleteServerArgs = {
+  serverReferenceId: Scalars['String'];
 };
 
 
@@ -177,6 +184,11 @@ export type JoinServerMutationVariables = Exact<{
 
 
 export type JoinServerMutation = { __typename?: 'Mutation', joinServer: boolean };
+
+export type LeaveServerMutationVariables = Exact<{ [key: string]: never; }>;
+
+
+export type LeaveServerMutation = { __typename?: 'Mutation', leaveServer: boolean };
 
 export type LoginMutationVariables = Exact<{
   options: LoginInput;
@@ -413,6 +425,36 @@ export function useJoinServerMutation(baseOptions?: Apollo.MutationHookOptions<J
 export type JoinServerMutationHookResult = ReturnType<typeof useJoinServerMutation>;
 export type JoinServerMutationResult = Apollo.MutationResult<JoinServerMutation>;
 export type JoinServerMutationOptions = Apollo.BaseMutationOptions<JoinServerMutation, JoinServerMutationVariables>;
+export const LeaveServerDocument = gql`
+    mutation LeaveServer {
+  leaveServer
+}
+    `;
+export type LeaveServerMutationFn = Apollo.MutationFunction<LeaveServerMutation, LeaveServerMutationVariables>;
+
+/**
+ * __useLeaveServerMutation__
+ *
+ * To run a mutation, you first call `useLeaveServerMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useLeaveServerMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [leaveServerMutation, { data, loading, error }] = useLeaveServerMutation({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useLeaveServerMutation(baseOptions?: Apollo.MutationHookOptions<LeaveServerMutation, LeaveServerMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<LeaveServerMutation, LeaveServerMutationVariables>(LeaveServerDocument, options);
+      }
+export type LeaveServerMutationHookResult = ReturnType<typeof useLeaveServerMutation>;
+export type LeaveServerMutationResult = Apollo.MutationResult<LeaveServerMutation>;
+export type LeaveServerMutationOptions = Apollo.BaseMutationOptions<LeaveServerMutation, LeaveServerMutationVariables>;
 export const LoginDocument = gql`
     mutation Login($options: LoginInput!) {
   login(options: $options) {
