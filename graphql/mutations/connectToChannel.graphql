@@ -1,3 +1,10 @@
 mutation ConnectToChannel($channelId: String!) {
-  connectToChannel(channelId: $channelId)
+  connectToChannel(channelId: $channelId) {
+    id
+    channelId
+    serverReferenceId
+    name
+    description
+    inviteUrl
+  }
 }

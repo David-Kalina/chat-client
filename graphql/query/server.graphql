@@ -1,0 +1,7 @@
+query Server($serverReferenceId: String!) {
+  server(serverReferenceId: $serverReferenceId) {
+    name
+    id
+    serverReferenceId
+  }
+}

@@ -1,11 +1,12 @@
 import React, { useContext } from 'react'
+import { Channel, Server } from '../generated/graphql'
 export const ServerContext = React.createContext<any>({})
 
 interface Props {
-  serverId: string
-  setServerId: (id: string) => void
-  channelId: string
-  setChannelId: (id: string) => void
+  connectedServer: Server
+  connectedChannel: Channel
+  setConnectedChannel: (channel: Channel) => void
+  setConnectedServer: (server: Server) => void
 }
 
 export function useServer(): Props {
@@ -13,18 +14,14 @@ export function useServer(): Props {
 }
 
 const ServerProvider = ({ children }: any) => {
-  const [serverId, setServerId] = React.useState('')
-  const [channelId, setChannelId] = React.useState('')
-
-  React.useEffect(() => {
-    console.log(serverId, channelId)
-  }, [serverId, channelId])
+  const [connectedServer, setConnectedServer] = React.useState('')
+  const [connectedChannel, setConnectedChannel] = React.useState('')
 
   const value = {
-    serverId,
-    setServerId,
-    channelId,
-    setChannelId,
+    connectedServer,
+    connectedChannel,
+    setConnectedServer,
+    setConnectedChannel,
   }
 
   return <ServerContext.Provider value={value}>{children}</ServerContext.Provider>

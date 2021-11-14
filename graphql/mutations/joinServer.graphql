@@ -1,0 +1,3 @@
+mutation JoinServer($serverReferenceId: String!) {
+  joinServer(serverReferenceId: $serverReferenceId)
+}

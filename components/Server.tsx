@@ -8,17 +8,21 @@ interface ServerProps {
 }
 
 function Server({ server }: ServerProps) {
-  const { setServerId, serverId } = useServer()
+  const { connectedServer, setConnectedServer } = useServer()
 
   const [mutation, _] = useConnectToServerMutation()
 
   const connectToServer = async () => {
-    const response = await mutation({
-      variables: {
-        serverId: server.serverId,
-      },
-    })
-    setServerId(response?.data?.connectToServer!)
+    try {
+      const response = await mutation({
+        variables: {
+          serverReferenceId: server.serverReferenceId,
+        },
+      })
+      setConnectedServer(response?.data?.connectToServer!)
+    } catch (error) {
+      console.log(error)
+    }
   }
 
   return (
@@ -29,7 +33,11 @@ function Server({ server }: ServerProps) {
       w="14"
       h="14"
       borderRadius="md"
-      border={server.serverId === serverId ? '1px solid yellow' : '1px solid red'}
+      border={
+        server.serverReferenceId === connectedServer.serverReferenceId
+          ? '1px solid yellow'
+          : '1px solid red'
+      }
     >
       {server.name}
     </Flex>

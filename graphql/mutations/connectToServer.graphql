@@ -1,3 +1,7 @@
-mutation ConnectToServer($serverId: String!) {
-  connectToServer(serverId: $serverId)
+mutation ConnectToServer($serverReferenceId: String!) {
+  connectToServer(serverReferenceId: $serverReferenceId) {
+    name
+    id
+    serverReferenceId
+  }
 }

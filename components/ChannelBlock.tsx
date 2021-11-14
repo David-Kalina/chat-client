@@ -7,14 +7,16 @@ import Channel from './Channel'
 
 function ChannelBlock() {
   const [isOpen, setIsOpen] = React.useState(true)
-  const { setChannelId, serverId } = useServer()
-  const { data, loading, error } = useChannelsQuery({ variables: { serverReferenceId: serverId } })
+  const { setConnectedChannel, connectedServer } = useServer()
+  const { data, loading, error } = useChannelsQuery({
+    variables: { serverReferenceId: connectedServer.serverReferenceId || '' },
+  })
 
   React.useEffect(() => {
     if (!loading && !error && data && data.channels && data.channels.length > 0) {
-      setChannelId(data?.channels[0]?.channelId)
+      setConnectedChannel(data?.channels[0])
     }
-  }, [setChannelId, data, loading, error])
+  }, [setConnectedChannel, data, loading, error])
 
   return (
     <Box w="100%">

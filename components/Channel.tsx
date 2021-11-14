@@ -1,4 +1,5 @@
 import { Box, Flex, Text } from '@chakra-ui/react'
+import { useRouter } from 'next/dist/client/router'
 import React from 'react'
 import { FaCircle } from 'react-icons/fa'
 import { useServer } from '../contexts/ServerContext'
@@ -14,6 +15,7 @@ interface Props {
 function Channel({ channel }: Props) {
   const [isEditOpen, setEditToggle] = useToggle(false)
   const [isInviteOpen, setInviteToggle] = useToggle(false)
+  const router = useRouter()
 
   const onCloseEdit = () => {
     setEditToggle(false)
@@ -24,7 +26,7 @@ function Channel({ channel }: Props) {
   }
 
   const [mutation, _] = useConnectToChannelMutation()
-  const { setChannelId, channelId } = useServer()
+  const { setConnectedChannel, connectedChannel } = useServer()
 
   const connectToChannel = async () => {
     const response = await mutation({
@@ -32,14 +34,15 @@ function Channel({ channel }: Props) {
         channelId: channel.channelId,
       },
     })
-    setChannelId(response?.data?.connectToChannel!)
+    setConnectedChannel(response?.data?.connectToChannel!)
+    router.push(`/channel/${response?.data?.connectToChannel.channelId}`)
   }
 
   return (
     <Flex
       onClick={connectToChannel}
       h="40px"
-      bg={channel.channelId === channelId ? '#27292d' : undefined}
+      bg={channel.channelId === connectedChannel.channelId ? '#27292d' : undefined}
       p="12px"
       align="center"
       justify="space-between"

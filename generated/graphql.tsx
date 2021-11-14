@@ -19,6 +19,7 @@ export type Channel = {
   channelId: Scalars['String'];
   description: Scalars['String'];
   id: Scalars['ID'];
+  inviteUrl: Scalars['String'];
   name: Scalars['String'];
   serverReferenceId: Scalars['String'];
 };
@@ -26,7 +27,7 @@ export type Channel = {
 export type CreateChannelInput = {
   description: Scalars['String'];
   name: Scalars['String'];
-  serverId: Scalars['String'];
+  serverReferenceId: Scalars['String'];
 };
 
 export type CreateServerInput = {
@@ -41,6 +42,7 @@ export type GlobalUser = {
   globalUserId: Scalars['String'];
   id: Scalars['ID'];
   lastName: Scalars['String'];
+  onlineStatus: Scalars['String'];
   profileURL: Scalars['String'];
 };
 
@@ -51,12 +53,15 @@ export type LoginInput = {
 
 export type Mutation = {
   __typename?: 'Mutation';
-  connectToChannel: Scalars['String'];
-  connectToServer: Scalars['String'];
+  connectToChannel: Channel;
+  connectToServer: Server;
   createChannel: Channel;
   createServer: Server;
+  joinServer: Scalars['Boolean'];
   login: GlobalUser;
+  logout: Scalars['Boolean'];
   register: GlobalUser;
+  setOnlineStatus: Scalars['String'];
 };
 
 
@@ -66,7 +71,7 @@ export type MutationConnectToChannelArgs = {
 
 
 export type MutationConnectToServerArgs = {
-  serverId: Scalars['String'];
+  serverReferenceId: Scalars['String'];
 };
 
 
@@ -80,6 +85,11 @@ export type MutationCreateServerArgs = {
 };
 
 
+export type MutationJoinServerArgs = {
+  serverReferenceId: Scalars['String'];
+};
+
+
 export type MutationLoginArgs = {
   options: LoginInput;
 };
@@ -89,11 +99,18 @@ export type MutationRegisterArgs = {
   options: RegisterInput;
 };
 
+
+export type MutationSetOnlineStatusArgs = {
+  onlineStatus: Scalars['String'];
+};
+
 export type Query = {
   __typename?: 'Query';
   channel: Channel;
   channels: Array<Channel>;
+  getOnlineStatus: Scalars['String'];
   hello: Scalars['String'];
+  server: Server;
   servers: Array<Server>;
 };
 
@@ -104,6 +121,11 @@ export type QueryChannelArgs = {
 
 
 export type QueryChannelsArgs = {
+  serverReferenceId: Scalars['String'];
+};
+
+
+export type QueryServerArgs = {
   serverReferenceId: Scalars['String'];
 };
 
@@ -118,7 +140,7 @@ export type Server = {
   __typename?: 'Server';
   id: Scalars['ID'];
   name: Scalars['String'];
-  serverId: Scalars['String'];
+  serverReferenceId: Scalars['String'];
 };
 
 export type ConnectToChannelMutationVariables = Exact<{
@@ -126,28 +148,40 @@ export type ConnectToChannelMutationVariables = Exact<{
 }>;
 
 
-export type ConnectToChannelMutation = { __typename?: 'Mutation', connectToChannel: string };
+export type ConnectToChannelMutation = { __typename?: 'Mutation', connectToChannel: { __typename?: 'Channel', id: string, channelId: string, serverReferenceId: string, name: string, description: string, inviteUrl: string } };
 
 export type ConnectToServerMutationVariables = Exact<{
-  serverId: Scalars['String'];
+  serverReferenceId: Scalars['String'];
 }>;
 
 
-export type ConnectToServerMutation = { __typename?: 'Mutation', connectToServer: string };
+export type ConnectToServerMutation = { __typename?: 'Mutation', connectToServer: { __typename?: 'Server', name: string, id: string, serverReferenceId: string } };
 
 export type CreateChannelMutationVariables = Exact<{
   options: CreateChannelInput;
 }>;
 
 
-export type CreateChannelMutation = { __typename?: 'Mutation', createChannel: { __typename?: 'Channel', id: string, channelId: string, serverReferenceId: string, name: string, description: string } };
+export type CreateChannelMutation = { __typename?: 'Mutation', createChannel: { __typename?: 'Channel', id: string, channelId: string, serverReferenceId: string, name: string, description: string, inviteUrl: string } };
 
 export type CreateServerMutationVariables = Exact<{
   options: CreateServerInput;
 }>;
 
 
-export type CreateServerMutation = { __typename?: 'Mutation', createServer: { __typename?: 'Server', name: string, id: string, serverId: string } };
+export type CreateServerMutation = { __typename?: 'Mutation', createServer: { __typename?: 'Server', name: string, id: string, serverReferenceId: string } };
+
+export type JoinServerMutationVariables = Exact<{
+  serverReferenceId: Scalars['String'];
+}>;
+
+
+export type JoinServerMutation = { __typename?: 'Mutation', joinServer: boolean };
+
+export type LogoutMutationVariables = Exact<{ [key: string]: never; }>;
+
+
+export type LogoutMutation = { __typename?: 'Mutation', logout: boolean };
 
 export type RegisterMutationVariables = Exact<{
   options: RegisterInput;
@@ -155,6 +189,13 @@ export type RegisterMutationVariables = Exact<{
 
 
 export type RegisterMutation = { __typename?: 'Mutation', register: { __typename?: 'GlobalUser', email: string, firstName: string, lastName: string, profileURL: string, globalUserId: string } };
+
+export type SetOnlineStatusMutationVariables = Exact<{
+  onlineStatus: Scalars['String'];
+}>;
+
+
+export type SetOnlineStatusMutation = { __typename?: 'Mutation', setOnlineStatus: string };
 
 export type ChannelQueryVariables = Exact<{
   channelId: Scalars['String'];
@@ -168,17 +209,36 @@ export type ChannelsQueryVariables = Exact<{
 }>;
 
 
-export type ChannelsQuery = { __typename?: 'Query', channels: Array<{ __typename?: 'Channel', name: string, id: string, channelId: string, description: string, serverReferenceId: string }> };
+export type ChannelsQuery = { __typename?: 'Query', channels: Array<{ __typename?: 'Channel', name: string, id: string, channelId: string, description: string, serverReferenceId: string, inviteUrl: string }> };
+
+export type OnlineStatusQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type OnlineStatusQuery = { __typename?: 'Query', getOnlineStatus: string };
+
+export type ServerQueryVariables = Exact<{
+  serverReferenceId: Scalars['String'];
+}>;
+
+
+export type ServerQuery = { __typename?: 'Query', server: { __typename?: 'Server', name: string, id: string, serverReferenceId: string } };
 
 export type ServersQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type ServersQuery = { __typename?: 'Query', servers: Array<{ __typename?: 'Server', name: string, id: string, serverId: string }> };
+export type ServersQuery = { __typename?: 'Query', servers: Array<{ __typename?: 'Server', name: string, id: string, serverReferenceId: string }> };
 
 
 export const ConnectToChannelDocument = gql`
     mutation ConnectToChannel($channelId: String!) {
-  connectToChannel(channelId: $channelId)
+  connectToChannel(channelId: $channelId) {
+    id
+    channelId
+    serverReferenceId
+    name
+    description
+    inviteUrl
+  }
 }
     `;
 export type ConnectToChannelMutationFn = Apollo.MutationFunction<ConnectToChannelMutation, ConnectToChannelMutationVariables>;
@@ -208,8 +268,12 @@ export type ConnectToChannelMutationHookResult = ReturnType<typeof useConnectToC
 export type ConnectToChannelMutationResult = Apollo.MutationResult<ConnectToChannelMutation>;
 export type ConnectToChannelMutationOptions = Apollo.BaseMutationOptions<ConnectToChannelMutation, ConnectToChannelMutationVariables>;
 export const ConnectToServerDocument = gql`
-    mutation ConnectToServer($serverId: String!) {
-  connectToServer(serverId: $serverId)
+    mutation ConnectToServer($serverReferenceId: String!) {
+  connectToServer(serverReferenceId: $serverReferenceId) {
+    name
+    id
+    serverReferenceId
+  }
 }
     `;
 export type ConnectToServerMutationFn = Apollo.MutationFunction<ConnectToServerMutation, ConnectToServerMutationVariables>;
@@ -227,7 +291,7 @@ export type ConnectToServerMutationFn = Apollo.MutationFunction<ConnectToServerM
  * @example
  * const [connectToServerMutation, { data, loading, error }] = useConnectToServerMutation({
  *   variables: {
- *      serverId: // value for 'serverId'
+ *      serverReferenceId: // value for 'serverReferenceId'
  *   },
  * });
  */
@@ -246,6 +310,7 @@ export const CreateChannelDocument = gql`
     serverReferenceId
     name
     description
+    inviteUrl
   }
 }
     `;
@@ -280,7 +345,7 @@ export const CreateServerDocument = gql`
   createServer(options: $options) {
     name
     id
-    serverId
+    serverReferenceId
   }
 }
     `;
@@ -310,6 +375,67 @@ export function useCreateServerMutation(baseOptions?: Apollo.MutationHookOptions
 export type CreateServerMutationHookResult = ReturnType<typeof useCreateServerMutation>;
 export type CreateServerMutationResult = Apollo.MutationResult<CreateServerMutation>;
 export type CreateServerMutationOptions = Apollo.BaseMutationOptions<CreateServerMutation, CreateServerMutationVariables>;
+export const JoinServerDocument = gql`
+    mutation JoinServer($serverReferenceId: String!) {
+  joinServer(serverReferenceId: $serverReferenceId)
+}
+    `;
+export type JoinServerMutationFn = Apollo.MutationFunction<JoinServerMutation, JoinServerMutationVariables>;
+
+/**
+ * __useJoinServerMutation__
+ *
+ * To run a mutation, you first call `useJoinServerMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useJoinServerMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [joinServerMutation, { data, loading, error }] = useJoinServerMutation({
+ *   variables: {
+ *      serverReferenceId: // value for 'serverReferenceId'
+ *   },
+ * });
+ */
+export function useJoinServerMutation(baseOptions?: Apollo.MutationHookOptions<JoinServerMutation, JoinServerMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<JoinServerMutation, JoinServerMutationVariables>(JoinServerDocument, options);
+      }
+export type JoinServerMutationHookResult = ReturnType<typeof useJoinServerMutation>;
+export type JoinServerMutationResult = Apollo.MutationResult<JoinServerMutation>;
+export type JoinServerMutationOptions = Apollo.BaseMutationOptions<JoinServerMutation, JoinServerMutationVariables>;
+export const LogoutDocument = gql`
+    mutation Logout {
+  logout
+}
+    `;
+export type LogoutMutationFn = Apollo.MutationFunction<LogoutMutation, LogoutMutationVariables>;
+
+/**
+ * __useLogoutMutation__
+ *
+ * To run a mutation, you first call `useLogoutMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useLogoutMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [logoutMutation, { data, loading, error }] = useLogoutMutation({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useLogoutMutation(baseOptions?: Apollo.MutationHookOptions<LogoutMutation, LogoutMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<LogoutMutation, LogoutMutationVariables>(LogoutDocument, options);
+      }
+export type LogoutMutationHookResult = ReturnType<typeof useLogoutMutation>;
+export type LogoutMutationResult = Apollo.MutationResult<LogoutMutation>;
+export type LogoutMutationOptions = Apollo.BaseMutationOptions<LogoutMutation, LogoutMutationVariables>;
 export const RegisterDocument = gql`
     mutation Register($options: RegisterInput!) {
   register(options: $options) {
@@ -347,6 +473,37 @@ export function useRegisterMutation(baseOptions?: Apollo.MutationHookOptions<Reg
 export type RegisterMutationHookResult = ReturnType<typeof useRegisterMutation>;
 export type RegisterMutationResult = Apollo.MutationResult<RegisterMutation>;
 export type RegisterMutationOptions = Apollo.BaseMutationOptions<RegisterMutation, RegisterMutationVariables>;
+export const SetOnlineStatusDocument = gql`
+    mutation SetOnlineStatus($onlineStatus: String!) {
+  setOnlineStatus(onlineStatus: $onlineStatus)
+}
+    `;
+export type SetOnlineStatusMutationFn = Apollo.MutationFunction<SetOnlineStatusMutation, SetOnlineStatusMutationVariables>;
+
+/**
+ * __useSetOnlineStatusMutation__
+ *
+ * To run a mutation, you first call `useSetOnlineStatusMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useSetOnlineStatusMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [setOnlineStatusMutation, { data, loading, error }] = useSetOnlineStatusMutation({
+ *   variables: {
+ *      onlineStatus: // value for 'onlineStatus'
+ *   },
+ * });
+ */
+export function useSetOnlineStatusMutation(baseOptions?: Apollo.MutationHookOptions<SetOnlineStatusMutation, SetOnlineStatusMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<SetOnlineStatusMutation, SetOnlineStatusMutationVariables>(SetOnlineStatusDocument, options);
+      }
+export type SetOnlineStatusMutationHookResult = ReturnType<typeof useSetOnlineStatusMutation>;
+export type SetOnlineStatusMutationResult = Apollo.MutationResult<SetOnlineStatusMutation>;
+export type SetOnlineStatusMutationOptions = Apollo.BaseMutationOptions<SetOnlineStatusMutation, SetOnlineStatusMutationVariables>;
 export const ChannelDocument = gql`
     query Channel($channelId: String!) {
   channel(channelId: $channelId) {
@@ -394,6 +551,7 @@ export const ChannelsDocument = gql`
     channelId
     description
     serverReferenceId
+    inviteUrl
   }
 }
     `;
@@ -425,12 +583,81 @@ export function useChannelsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<C
 export type ChannelsQueryHookResult = ReturnType<typeof useChannelsQuery>;
 export type ChannelsLazyQueryHookResult = ReturnType<typeof useChannelsLazyQuery>;
 export type ChannelsQueryResult = Apollo.QueryResult<ChannelsQuery, ChannelsQueryVariables>;
+export const OnlineStatusDocument = gql`
+    query OnlineStatus {
+  getOnlineStatus
+}
+    `;
+
+/**
+ * __useOnlineStatusQuery__
+ *
+ * To run a query within a React component, call `useOnlineStatusQuery` and pass it any options that fit your needs.
+ * When your component renders, `useOnlineStatusQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useOnlineStatusQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useOnlineStatusQuery(baseOptions?: Apollo.QueryHookOptions<OnlineStatusQuery, OnlineStatusQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<OnlineStatusQuery, OnlineStatusQueryVariables>(OnlineStatusDocument, options);
+      }
+export function useOnlineStatusLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<OnlineStatusQuery, OnlineStatusQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<OnlineStatusQuery, OnlineStatusQueryVariables>(OnlineStatusDocument, options);
+        }
+export type OnlineStatusQueryHookResult = ReturnType<typeof useOnlineStatusQuery>;
+export type OnlineStatusLazyQueryHookResult = ReturnType<typeof useOnlineStatusLazyQuery>;
+export type OnlineStatusQueryResult = Apollo.QueryResult<OnlineStatusQuery, OnlineStatusQueryVariables>;
+export const ServerDocument = gql`
+    query Server($serverReferenceId: String!) {
+  server(serverReferenceId: $serverReferenceId) {
+    name
+    id
+    serverReferenceId
+  }
+}
+    `;
+
+/**
+ * __useServerQuery__
+ *
+ * To run a query within a React component, call `useServerQuery` and pass it any options that fit your needs.
+ * When your component renders, `useServerQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useServerQuery({
+ *   variables: {
+ *      serverReferenceId: // value for 'serverReferenceId'
+ *   },
+ * });
+ */
+export function useServerQuery(baseOptions: Apollo.QueryHookOptions<ServerQuery, ServerQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<ServerQuery, ServerQueryVariables>(ServerDocument, options);
+      }
+export function useServerLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<ServerQuery, ServerQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<ServerQuery, ServerQueryVariables>(ServerDocument, options);
+        }
+export type ServerQueryHookResult = ReturnType<typeof useServerQuery>;
+export type ServerLazyQueryHookResult = ReturnType<typeof useServerLazyQuery>;
+export type ServerQueryResult = Apollo.QueryResult<ServerQuery, ServerQueryVariables>;
 export const ServersDocument = gql`
     query Servers {
   servers {
     name
     id
-    serverId
+    serverReferenceId
   }
 }
     `;

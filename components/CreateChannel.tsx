@@ -15,6 +15,7 @@ import {
 import React from 'react'
 import { useServer } from '../contexts/ServerContext'
 import { Channel, CreateChannelInput, useCreateChannelMutation } from '../generated/graphql'
+import ErrorMessage from './Error'
 
 interface CreateChannelProps {
   isOpen: boolean
@@ -22,34 +23,27 @@ interface CreateChannelProps {
 }
 
 function CreateChannel({ isOpen, onClose }: CreateChannelProps) {
-  const { serverId } = useServer()
-  const [channel, setChannel] = React.useState<CreateChannelInput>({
+  const { connectedServer } = useServer()
+
+  const [channel, setConnectedChannel] = React.useState({
     name: '',
     description: '',
-    serverId,
   })
   const [mutation, _] = useCreateChannelMutation()
 
   const submit = async () => {
-    const response = await mutation({
-      variables: { options: channel },
-      update(cache, { data: mutation }) {
-        cache.modify({
-          fields: {
-            channels(existingChannels, { readField }) {
-              const newChannel: Channel = readField('createChannel', mutation!)!
-              const currentChannels = existingChannels.filter(
-                (c: Channel) => c.serverReferenceId === newChannel.serverReferenceId
-              )
-              return [...currentChannels, newChannel]
-            },
-          },
-        })
-        if (response?.data?.createChannel?.channelId) {
-          onClose()
-        }
-      },
-    })
+    try {
+      await mutation({
+        variables: {
+          options: { ...channel, serverReferenceId: connectedServer.serverReferenceId },
+        },
+        update(cache) {
+          cache.evict({ fieldName: 'channels' })
+        },
+      })
+    } catch (error) {
+      return ErrorMessage
+    }
   }
 
   return (
@@ -64,7 +58,7 @@ function CreateChannel({ isOpen, onClose }: CreateChannelProps) {
               <FormControl>
                 <FormLabel htmlFor="channel-name">Name</FormLabel>
                 <Input
-                  onChange={e => setChannel({ ...channel, name: e.target.value })}
+                  onChange={e => setConnectedChannel({ ...channel, name: e.target.value })}
                   id="channel-name"
                   placeholder="onboarding"
                 />
@@ -72,7 +66,7 @@ function CreateChannel({ isOpen, onClose }: CreateChannelProps) {
               <FormControl>
                 <FormLabel htmlFor="channel-description">Description</FormLabel>
                 <Input
-                  onChange={e => setChannel({ ...channel, description: e.target.value })}
+                  onChange={e => setConnectedChannel({ ...channel, description: e.target.value })}
                   id="channel-description"
                   placeholder="Come here to get resources and help"
                 />

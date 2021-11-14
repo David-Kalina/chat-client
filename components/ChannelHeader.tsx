@@ -6,8 +6,10 @@ import { useServer } from '../contexts/ServerContext'
 import { useChannelQuery } from '../generated/graphql'
 
 function ChannelHeader() {
-  const { channelId } = useServer()
-  const { data, loading, error } = useChannelQuery({ variables: { channelId } })
+  const { connectedChannel } = useServer()
+  const { data, loading, error } = useChannelQuery({
+    variables: { channelId: connectedChannel.channelId || '' },
+  })
 
   const channel = data?.channel
 

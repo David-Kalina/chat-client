@@ -7,13 +7,13 @@ import Server from './Server'
 
 function ServerList() {
   const { loading, error, data } = useServersQuery()
-  const { setServerId } = useServer()
+  const { setConnectedServer } = useServer()
 
   React.useEffect(() => {
     if (data && !loading && data?.servers?.length > 0) {
-      setServerId(data.servers[0].serverId)
+      setConnectedServer(data.servers[0])
     }
-  }, [data, setServerId, loading])
+  }, [data, setConnectedServer, loading])
 
   return (
     <GridItem bg="#1c1e1f">

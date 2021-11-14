@@ -2,6 +2,6 @@ mutation CreateServer($options: CreateServerInput!) {
   createServer(options: $options) {
     name
     id
-    serverId
+    serverReferenceId
   }
 }

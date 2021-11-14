@@ -23,7 +23,7 @@ interface CreateServerProps {
 
 function CreateServer({ isOpen, onClose }: CreateServerProps) {
   const [name, setName] = React.useState('')
-  const { setServerId } = useServer()
+  const { setConnectedServer } = useServer()
   const [mutation, _] = useCreateServerMutation()
 
   const submit = async () => {
@@ -43,7 +43,7 @@ function CreateServer({ isOpen, onClose }: CreateServerProps) {
       })
       if (response.data?.createServer.serverId!) {
         onClose()
-        setServerId(response?.data?.createServer?.serverId)
+        setConnectedServer(response?.data?.createServer!)
       }
     }
   }
