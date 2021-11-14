@@ -57,7 +57,10 @@ export type Mutation = {
   connectToServer: Server;
   createChannel: Channel;
   createServer: Server;
+  deleteChannel: Scalars['Boolean'];
   deleteServer: Scalars['Boolean'];
+  editChannel: Channel;
+  editServer: Server;
   joinServer: Scalars['Boolean'];
   leaveServer: Scalars['Boolean'];
   login: GlobalUser;
@@ -87,7 +90,19 @@ export type MutationCreateServerArgs = {
 };
 
 
-export type MutationDeleteServerArgs = {
+export type MutationDeleteChannelArgs = {
+  channelId: Scalars['String'];
+};
+
+
+export type MutationEditChannelArgs = {
+  channelId: Scalars['String'];
+  options: CreateChannelInput;
+};
+
+
+export type MutationEditServerArgs = {
+  options: CreateServerInput;
   serverReferenceId: Scalars['String'];
 };
 
@@ -177,6 +192,11 @@ export type CreateServerMutationVariables = Exact<{
 
 
 export type CreateServerMutation = { __typename?: 'Mutation', createServer: { __typename?: 'Server', name: string, id: string, serverReferenceId: string } };
+
+export type DeleteServerMutationVariables = Exact<{ [key: string]: never; }>;
+
+
+export type DeleteServerMutation = { __typename?: 'Mutation', deleteServer: boolean };
 
 export type JoinServerMutationVariables = Exact<{
   serverReferenceId: Scalars['String'];
@@ -394,6 +414,36 @@ export function useCreateServerMutation(baseOptions?: Apollo.MutationHookOptions
 export type CreateServerMutationHookResult = ReturnType<typeof useCreateServerMutation>;
 export type CreateServerMutationResult = Apollo.MutationResult<CreateServerMutation>;
 export type CreateServerMutationOptions = Apollo.BaseMutationOptions<CreateServerMutation, CreateServerMutationVariables>;
+export const DeleteServerDocument = gql`
+    mutation DeleteServer {
+  deleteServer
+}
+    `;
+export type DeleteServerMutationFn = Apollo.MutationFunction<DeleteServerMutation, DeleteServerMutationVariables>;
+
+/**
+ * __useDeleteServerMutation__
+ *
+ * To run a mutation, you first call `useDeleteServerMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteServerMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteServerMutation, { data, loading, error }] = useDeleteServerMutation({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useDeleteServerMutation(baseOptions?: Apollo.MutationHookOptions<DeleteServerMutation, DeleteServerMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<DeleteServerMutation, DeleteServerMutationVariables>(DeleteServerDocument, options);
+      }
+export type DeleteServerMutationHookResult = ReturnType<typeof useDeleteServerMutation>;
+export type DeleteServerMutationResult = Apollo.MutationResult<DeleteServerMutation>;
+export type DeleteServerMutationOptions = Apollo.BaseMutationOptions<DeleteServerMutation, DeleteServerMutationVariables>;
 export const JoinServerDocument = gql`
     mutation JoinServer($serverReferenceId: String!) {
   joinServer(serverReferenceId: $serverReferenceId)
