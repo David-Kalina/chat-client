@@ -1,12 +1,14 @@
 import { Box, Text } from '@chakra-ui/layout'
 import { Flex } from '@chakra-ui/react'
 import React from 'react'
+import { useOnlineStatusQuery, useSetOnlineStatusMutation } from '../generated/graphql'
+import { useIdleTimer } from 'react-idle-timer'
 
-interface BoxProps {
-  status: string
-}
+function OnlineStatus() {
+  const { data } = useOnlineStatusQuery()
 
-function OnlineStatus({ status }: BoxProps) {
+  const status = data?.getOnlineStatus
+
   switch (status) {
     case 'online':
       return (

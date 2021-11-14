@@ -8,19 +8,7 @@ import '../styles/globals.css'
 const client = new ApolloClient({
   uri: 'http://localhost:4000/graphql',
   credentials: 'include',
-  cache: new InMemoryCache({
-    typePolicies: {
-      Query: {
-        fields: {
-          me: {
-            read() {
-              return null
-            },
-          },
-        },
-      },
-    },
-  }),
+  cache: new InMemoryCache({}),
 })
 
 function MyApp({ Component, pageProps }: AppProps) {

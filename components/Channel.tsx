@@ -5,6 +5,7 @@ import { FaCircle } from 'react-icons/fa'
 import { useServer } from '../contexts/ServerContext'
 import { Channel, useConnectToChannelMutation } from '../generated/graphql'
 import useToggle from '../hooks/useHook'
+import ChannelSettings from './ChannelSettings'
 import EditChannel from './EditChannel'
 import InviteUser from './InviteUser'
 
@@ -55,10 +56,8 @@ function Channel({ channel }: Props) {
           {channel.name}
         </Text>
       </Flex>
-      <Flex>
-        <Box onClick={() => setEditToggle(!isEditOpen)}>
-          <EditChannel isOpen={isEditOpen} onClose={onCloseEdit} />
-        </Box>
+      <Flex align="center">
+        <ChannelSettings />
         <Box ml="1rem" onClick={() => setInviteToggle(!isInviteOpen)}>
           <InviteUser isOpen={isInviteOpen} onClose={onCloseInvite} />
         </Box>

@@ -26,7 +26,7 @@ function ChannelHeader() {
               {channel?.description}
             </Text>
           </Flex>
-          <HStack>
+          {/* <HStack>
             <Avatar borderRadius="sm" size="xs" />
             <Avatar borderRadius="sm" size="xs" />
             <Avatar borderRadius="sm" size="xs" />
@@ -34,7 +34,7 @@ function ChannelHeader() {
             <Box borderRadius="sm" w="23px" h="23px">
               {24}
             </Box>
-          </HStack>
+          </HStack> */}
         </>
       ) : (
         <Box>Loading</Box>

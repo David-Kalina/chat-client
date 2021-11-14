@@ -10,6 +10,7 @@ import { FaCog } from 'react-icons/fa'
 import ServerSettings from './ServerSettings'
 import useToggle from '../hooks/useHook'
 import ServerMenu from './ServerSettings'
+import ServerUserCount from './ServerUserCount'
 
 function ChannelNavigation() {
   const [isOpen, toggle] = useToggle(false)
@@ -27,6 +28,9 @@ function ChannelNavigation() {
           <Flex align="center">
             <FiUser />
             <Text ml="1rem">Members</Text>
+            <Box ml="1rem">
+              <ServerUserCount />
+            </Box>
           </Flex>
           <ServerMenu />
         </VStack>

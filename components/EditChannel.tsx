@@ -1,13 +1,21 @@
+import { Button } from '@chakra-ui/button'
 import {
+  FormControl,
+  FormLabel,
+  Input,
   Modal,
   ModalBody,
   ModalCloseButton,
   ModalContent,
+  ModalFooter,
   ModalHeader,
-  ModalOverlay
+  ModalOverlay,
+  VStack,
 } from '@chakra-ui/react'
 import React from 'react'
-import { FaCog } from 'react-icons/fa'
+import { useServer } from '../contexts/ServerContext'
+import { useEditChannelMutation } from '../generated/graphql'
+import ErrorMessage from './Error'
 
 interface EditChannelProps {
   isOpen: boolean
@@ -15,18 +23,68 @@ interface EditChannelProps {
 }
 
 function EditChannel({ isOpen, onClose }: EditChannelProps) {
+  const { connectedServer } = useServer()
+
+  const [channel, setConnectedChannel] = React.useState({
+    name: '',
+    description: '',
+  })
+  const [mutation, _] = useEditChannelMutation()
+
+  const submit = async () => {
+    try {
+      await mutation({
+        variables: {
+          options: { ...channel, serverReferenceId: connectedServer.serverReferenceId },
+        },
+        update(cache) {
+          cache.evict({ fieldName: 'channels' })
+        },
+      })
+    } catch (error) {
+      return ErrorMessage
+    }
+  }
+
   return (
-    <>
-      <FaCog />
-      <Modal isOpen={isOpen} onClose={onClose} isCentered size="full">
-        <ModalOverlay />
-        <ModalContent bg="#181a1b">
-          <ModalHeader>Edit Channel</ModalHeader>
-          <ModalCloseButton />
-          <ModalBody w="45%" mx="auto" border="1px solid red"></ModalBody>
-        </ModalContent>
-      </Modal>
-    </>
+    <Modal isOpen={isOpen} onClose={onClose} isCentered>
+      <ModalOverlay />
+      <ModalContent bg="#181a1b">
+        <ModalHeader>Add Channel</ModalHeader>
+        <ModalCloseButton />
+        <ModalBody>
+          <form>
+            <VStack>
+              <FormControl>
+                <FormLabel htmlFor="channel-name">Name</FormLabel>
+                <Input
+                  onChange={e => setConnectedChannel({ ...channel, name: e.target.value })}
+                  id="channel-name"
+                  placeholder="onboarding"
+                />
+              </FormControl>
+              <FormControl>
+                <FormLabel htmlFor="channel-description">Description</FormLabel>
+                <Input
+                  onChange={e => setConnectedChannel({ ...channel, description: e.target.value })}
+                  id="channel-description"
+                  placeholder="Come here to get resources and help"
+                />
+              </FormControl>
+            </VStack>
+          </form>
+        </ModalBody>
+
+        <ModalFooter>
+          <Button colorScheme="orange" mr={3} onClick={onClose}>
+            Close
+          </Button>
+          <Button colorScheme="orange" onClick={submit}>
+            Submit
+          </Button>
+        </ModalFooter>
+      </ModalContent>
+    </Modal>
   )
 }
 

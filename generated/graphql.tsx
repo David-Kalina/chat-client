@@ -90,13 +90,7 @@ export type MutationCreateServerArgs = {
 };
 
 
-export type MutationDeleteChannelArgs = {
-  channelId: Scalars['String'];
-};
-
-
 export type MutationEditChannelArgs = {
-  channelId: Scalars['String'];
   options: CreateChannelInput;
 };
 
@@ -131,7 +125,9 @@ export type Query = {
   channel: Channel;
   channels: Array<Channel>;
   getOnlineStatus: Scalars['String'];
+  getServerUsers: Scalars['Float'];
   hello: Scalars['String'];
+  me: GlobalUser;
   server: Server;
   servers: Array<Server>;
 };
@@ -193,10 +189,22 @@ export type CreateServerMutationVariables = Exact<{
 
 export type CreateServerMutation = { __typename?: 'Mutation', createServer: { __typename?: 'Server', name: string, id: string, serverReferenceId: string } };
 
+export type DeleteChannelMutationVariables = Exact<{ [key: string]: never; }>;
+
+
+export type DeleteChannelMutation = { __typename?: 'Mutation', deleteChannel: boolean };
+
 export type DeleteServerMutationVariables = Exact<{ [key: string]: never; }>;
 
 
 export type DeleteServerMutation = { __typename?: 'Mutation', deleteServer: boolean };
+
+export type EditChannelMutationVariables = Exact<{
+  options: CreateChannelInput;
+}>;
+
+
+export type EditChannelMutation = { __typename?: 'Mutation', editChannel: { __typename?: 'Channel', channelId: string, description: string, name: string, id: string, serverReferenceId: string } };
 
 export type JoinServerMutationVariables = Exact<{
   serverReferenceId: Scalars['String'];
@@ -250,6 +258,11 @@ export type ChannelsQueryVariables = Exact<{
 
 export type ChannelsQuery = { __typename?: 'Query', channels: Array<{ __typename?: 'Channel', name: string, id: string, channelId: string, description: string, serverReferenceId: string, inviteUrl: string }> };
 
+export type MeQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type MeQuery = { __typename?: 'Query', me: { __typename?: 'GlobalUser', firstName: string, lastName: string } };
+
 export type OnlineStatusQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -261,6 +274,11 @@ export type ServerQueryVariables = Exact<{
 
 
 export type ServerQuery = { __typename?: 'Query', server: { __typename?: 'Server', name: string, id: string, serverReferenceId: string } };
+
+export type ServerUsersQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type ServerUsersQuery = { __typename?: 'Query', getServerUsers: number };
 
 export type ServersQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -414,6 +432,36 @@ export function useCreateServerMutation(baseOptions?: Apollo.MutationHookOptions
 export type CreateServerMutationHookResult = ReturnType<typeof useCreateServerMutation>;
 export type CreateServerMutationResult = Apollo.MutationResult<CreateServerMutation>;
 export type CreateServerMutationOptions = Apollo.BaseMutationOptions<CreateServerMutation, CreateServerMutationVariables>;
+export const DeleteChannelDocument = gql`
+    mutation DeleteChannel {
+  deleteChannel
+}
+    `;
+export type DeleteChannelMutationFn = Apollo.MutationFunction<DeleteChannelMutation, DeleteChannelMutationVariables>;
+
+/**
+ * __useDeleteChannelMutation__
+ *
+ * To run a mutation, you first call `useDeleteChannelMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteChannelMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteChannelMutation, { data, loading, error }] = useDeleteChannelMutation({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useDeleteChannelMutation(baseOptions?: Apollo.MutationHookOptions<DeleteChannelMutation, DeleteChannelMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<DeleteChannelMutation, DeleteChannelMutationVariables>(DeleteChannelDocument, options);
+      }
+export type DeleteChannelMutationHookResult = ReturnType<typeof useDeleteChannelMutation>;
+export type DeleteChannelMutationResult = Apollo.MutationResult<DeleteChannelMutation>;
+export type DeleteChannelMutationOptions = Apollo.BaseMutationOptions<DeleteChannelMutation, DeleteChannelMutationVariables>;
 export const DeleteServerDocument = gql`
     mutation DeleteServer {
   deleteServer
@@ -444,6 +492,43 @@ export function useDeleteServerMutation(baseOptions?: Apollo.MutationHookOptions
 export type DeleteServerMutationHookResult = ReturnType<typeof useDeleteServerMutation>;
 export type DeleteServerMutationResult = Apollo.MutationResult<DeleteServerMutation>;
 export type DeleteServerMutationOptions = Apollo.BaseMutationOptions<DeleteServerMutation, DeleteServerMutationVariables>;
+export const EditChannelDocument = gql`
+    mutation EditChannel($options: CreateChannelInput!) {
+  editChannel(options: $options) {
+    channelId
+    description
+    name
+    id
+    serverReferenceId
+  }
+}
+    `;
+export type EditChannelMutationFn = Apollo.MutationFunction<EditChannelMutation, EditChannelMutationVariables>;
+
+/**
+ * __useEditChannelMutation__
+ *
+ * To run a mutation, you first call `useEditChannelMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useEditChannelMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [editChannelMutation, { data, loading, error }] = useEditChannelMutation({
+ *   variables: {
+ *      options: // value for 'options'
+ *   },
+ * });
+ */
+export function useEditChannelMutation(baseOptions?: Apollo.MutationHookOptions<EditChannelMutation, EditChannelMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<EditChannelMutation, EditChannelMutationVariables>(EditChannelDocument, options);
+      }
+export type EditChannelMutationHookResult = ReturnType<typeof useEditChannelMutation>;
+export type EditChannelMutationResult = Apollo.MutationResult<EditChannelMutation>;
+export type EditChannelMutationOptions = Apollo.BaseMutationOptions<EditChannelMutation, EditChannelMutationVariables>;
 export const JoinServerDocument = gql`
     mutation JoinServer($serverReferenceId: String!) {
   joinServer(serverReferenceId: $serverReferenceId)
@@ -718,6 +803,41 @@ export function useChannelsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<C
 export type ChannelsQueryHookResult = ReturnType<typeof useChannelsQuery>;
 export type ChannelsLazyQueryHookResult = ReturnType<typeof useChannelsLazyQuery>;
 export type ChannelsQueryResult = Apollo.QueryResult<ChannelsQuery, ChannelsQueryVariables>;
+export const MeDocument = gql`
+    query Me {
+  me {
+    firstName
+    lastName
+  }
+}
+    `;
+
+/**
+ * __useMeQuery__
+ *
+ * To run a query within a React component, call `useMeQuery` and pass it any options that fit your needs.
+ * When your component renders, `useMeQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useMeQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useMeQuery(baseOptions?: Apollo.QueryHookOptions<MeQuery, MeQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<MeQuery, MeQueryVariables>(MeDocument, options);
+      }
+export function useMeLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<MeQuery, MeQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<MeQuery, MeQueryVariables>(MeDocument, options);
+        }
+export type MeQueryHookResult = ReturnType<typeof useMeQuery>;
+export type MeLazyQueryHookResult = ReturnType<typeof useMeLazyQuery>;
+export type MeQueryResult = Apollo.QueryResult<MeQuery, MeQueryVariables>;
 export const OnlineStatusDocument = gql`
     query OnlineStatus {
   getOnlineStatus
@@ -787,6 +907,38 @@ export function useServerLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<Ser
 export type ServerQueryHookResult = ReturnType<typeof useServerQuery>;
 export type ServerLazyQueryHookResult = ReturnType<typeof useServerLazyQuery>;
 export type ServerQueryResult = Apollo.QueryResult<ServerQuery, ServerQueryVariables>;
+export const ServerUsersDocument = gql`
+    query ServerUsers {
+  getServerUsers
+}
+    `;
+
+/**
+ * __useServerUsersQuery__
+ *
+ * To run a query within a React component, call `useServerUsersQuery` and pass it any options that fit your needs.
+ * When your component renders, `useServerUsersQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useServerUsersQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useServerUsersQuery(baseOptions?: Apollo.QueryHookOptions<ServerUsersQuery, ServerUsersQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<ServerUsersQuery, ServerUsersQueryVariables>(ServerUsersDocument, options);
+      }
+export function useServerUsersLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<ServerUsersQuery, ServerUsersQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<ServerUsersQuery, ServerUsersQueryVariables>(ServerUsersDocument, options);
+        }
+export type ServerUsersQueryHookResult = ReturnType<typeof useServerUsersQuery>;
+export type ServerUsersLazyQueryHookResult = ReturnType<typeof useServerUsersLazyQuery>;
+export type ServerUsersQueryResult = Apollo.QueryResult<ServerUsersQuery, ServerUsersQueryVariables>;
 export const ServersDocument = gql`
     query Servers {
   servers {

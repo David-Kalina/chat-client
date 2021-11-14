@@ -1,0 +1,9 @@
+mutation EditChannel($options: CreateChannelInput!) {
+  editChannel(options: $options) {
+    channelId
+    description
+    name
+    id
+    serverReferenceId
+  }
+}
