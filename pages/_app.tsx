@@ -1,6 +1,7 @@
 import { ApolloClient, ApolloProvider, InMemoryCache } from '@apollo/client'
 import { ChakraProvider, theme } from '@chakra-ui/react'
 import type { AppProps } from 'next/app'
+import AuthProvider from '../contexts/AuthContext'
 import ServerProvider from '../contexts/ServerContext'
 import '../styles/globals.css'
 
@@ -26,9 +27,11 @@ function MyApp({ Component, pageProps }: AppProps) {
   return (
     <ChakraProvider theme={theme}>
       <ApolloProvider client={client}>
-        <ServerProvider>
-          <Component {...pageProps} />
-        </ServerProvider>
+        <AuthProvider>
+          <ServerProvider>
+            <Component {...pageProps} />
+          </ServerProvider>
+        </AuthProvider>
       </ApolloProvider>
     </ChakraProvider>
   )
