@@ -1,10 +1,11 @@
 import { Avatar } from '@chakra-ui/avatar'
 import { VStack, Flex, Text, Box } from '@chakra-ui/layout'
 import React from 'react'
+import { Message } from '../generated/graphql'
 import ChatMessage from './ChatMessage'
 
 export interface ChatBlockInterface {
-  messages: string[]
+  messages: Message[]
   isMine: boolean
 }
 
@@ -22,9 +23,9 @@ function ChatBlock({ messages, isMine }: ChatBlockInterface) {
               </Text>
             </Flex>
             <VStack align="start" mt="0.5rem" w="100%">
-              <ChatMessage isMine={isMine} message="Hello" />
-              <ChatMessage isMine={isMine} message="How are you" />
-              <ChatMessage isMine={isMine} message="I saw your latest pyroject, super sick bro" />
+              {messages.map((message, index) => (
+                <ChatMessage key={index} message={message.text} isMine={isMine} />
+              ))}
             </VStack>
           </Box>
         </Flex>
@@ -41,9 +42,9 @@ function ChatBlock({ messages, isMine }: ChatBlockInterface) {
               </Text>
             </Flex>
             <VStack align="end" mt="0.5rem" w="100%">
-              <ChatMessage isMine={isMine} message="Hello" />
-              <ChatMessage isMine={isMine} message="How are you" />
-              <ChatMessage isMine={isMine} message="I saw your latest project, super sick bro" />
+              {messages.map((message, index) => (
+                <ChatMessage key={index} message={message.text} isMine={isMine} />
+              ))}
             </VStack>
           </Box>
         </Flex>

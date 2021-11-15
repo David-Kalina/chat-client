@@ -1,0 +1,12 @@
+query ChatBlocks {
+  chatBlocks {
+    createdAt
+    isMine
+    user {
+      globalUserReferenceId
+    }
+    messages {
+      text
+    }
+  }
+}

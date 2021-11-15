@@ -43,18 +43,15 @@ const AuthProvider: React.FC = ({ children }) => {
   }
 
   const login = async (options: LoginInput) => {
-    console.log('Logging in')
     try {
       const response = await loginMutation({ variables: { options } })
 
       window.localStorage.setItem('user', JSON.stringify(response.data?.login as GlobalUser))
       setCurrentUser(response.data?.login as GlobalUser)
 
-      console.log(response.data?.login as GlobalUser)
 
       return router.push('/')
     } catch (error) {
-      console.log(error)
       return error
     }
   }

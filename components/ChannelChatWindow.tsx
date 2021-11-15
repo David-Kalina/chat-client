@@ -1,6 +1,6 @@
 import { GridItem } from '@chakra-ui/layout'
 import React from 'react'
-import ChannelChat from './ChannelChat'
+import ChatRoom from './ChatRoom'
 import ChannelHeader from './ChannelHeader'
 import ChatInput from './ChatInput'
 
@@ -22,7 +22,7 @@ function ChannelChatWindow() {
         gridRowStart={2}
         gridRowEnd={3}
       >
-        <ChannelChat />
+        <ChatRoom />
       </GridItem>
       <GridItem gridRowStart={3} gridRowEnd={4}>
         <ChatInput />

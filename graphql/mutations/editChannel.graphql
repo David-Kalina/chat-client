@@ -1,6 +1,6 @@
 mutation EditChannel($options: CreateChannelInput!) {
   editChannel(options: $options) {
-    channelId
+    channelReferenceId
     description
     name
     id

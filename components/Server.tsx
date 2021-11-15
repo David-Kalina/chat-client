@@ -21,7 +21,7 @@ function Server({ server }: ServerProps) {
       })
       setConnectedServer(response?.data?.connectToServer!)
     } catch (error) {
-      console.log(error)
+      return error
     }
   }
 

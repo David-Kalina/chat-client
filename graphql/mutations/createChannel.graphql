@@ -1,7 +1,7 @@
 mutation CreateChannel($options: CreateChannelInput!) {
   createChannel(options: $options) {
     id
-    channelId
+    channelReferenceId
     serverReferenceId
     name
     description

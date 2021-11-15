@@ -7,7 +7,6 @@ import UserMenu from './UserMenu'
 function ProfileCard() {
   const { data, loading } = useMeQuery()
 
-  console.log(data)
 
   if (loading) {
     return <div>Loading...</div>

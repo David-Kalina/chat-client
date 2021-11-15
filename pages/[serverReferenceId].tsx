@@ -17,7 +17,6 @@ function Invited() {
   })
 
   if (error) {
-    console.log(error)
     router.push('/')
   }
 

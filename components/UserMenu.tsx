@@ -53,7 +53,7 @@ function UserMenu() {
   }
 
   useIdleTimer({
-    timeout: 2 * 1000,
+    timeout: 2 * 60 * 1000,
     onIdle: handleOnIdle,
     onAction: handleOnAction,
     debounce: 0,

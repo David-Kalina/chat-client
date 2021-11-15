@@ -1,8 +1,8 @@
-query Channel($channelId: String!) {
-  channel(channelId: $channelId) {
+query Channel($channelReferenceId: String!) {
+  channel(channelReferenceId: $channelReferenceId) {
     id
     serverReferenceId
-    channelId
+    channelReferenceId
     name
     description
   }

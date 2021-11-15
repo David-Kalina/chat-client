@@ -1,7 +1,7 @@
-mutation ConnectToChannel($channelId: String!) {
-  connectToChannel(channelId: $channelId) {
+mutation ConnectToChannel($channelReferenceId: String!) {
+  connectToChannel(channelReferenceId: $channelReferenceId) {
     id
-    channelId
+    channelReferenceId
     serverReferenceId
     name
     description

@@ -29,21 +29,25 @@ function Channel({ channel }: Props) {
   const [mutation, _] = useConnectToChannelMutation()
   const { setConnectedChannel, connectedChannel } = useServer()
 
+  console.log(connectedChannel)
+
   const connectToChannel = async () => {
     const response = await mutation({
       variables: {
-        channelId: channel.channelId,
+        channelReferenceId: channel.channelReferenceId,
       },
     })
     setConnectedChannel(response?.data?.connectToChannel!)
-    router.push(`/channel/${response?.data?.connectToChannel.channelId}`)
+    router.push(`/channel/${response?.data?.connectToChannel.channelReferenceId}`)
   }
 
   return (
     <Flex
       onClick={connectToChannel}
       h="40px"
-      bg={channel.channelId === connectedChannel.channelId ? '#27292d' : undefined}
+      bg={
+        channel.channelReferenceId === connectedChannel.channelReferenceId ? '#27292d' : undefined
+      }
       p="12px"
       align="center"
       justify="space-between"
