@@ -12,9 +12,10 @@ import {
   ModalOverlay,
   VStack,
 } from '@chakra-ui/react'
+import router from 'next/router'
 import React from 'react'
 import { useServer } from '../contexts/ServerContext'
-import { Channel, CreateChannelInput, useCreateChannelMutation } from '../generated/graphql'
+import { Channel, useCreateChannelMutation } from '../generated/graphql'
 import ErrorMessage from './Error'
 
 interface CreateChannelProps {
@@ -23,13 +24,13 @@ interface CreateChannelProps {
 }
 
 function CreateChannel({ isOpen, onClose }: CreateChannelProps) {
-  const { connectedServer } = useServer()
+  const { connectedServer, setConnectedChannel } = useServer()
 
-  const [channel, setConnectedChannel] = React.useState({
+  const [channel, setChannel] = React.useState({
     name: '',
     description: '',
   })
-  const [mutation, _] = useCreateChannelMutation()
+  const [mutation, { data }] = useCreateChannelMutation()
 
   const submit = async () => {
     try {
@@ -41,6 +42,10 @@ function CreateChannel({ isOpen, onClose }: CreateChannelProps) {
           cache.evict({ fieldName: 'channels' })
         },
       })
+
+      setConnectedChannel(data?.createChannel!)
+
+      router.push(`/channel/${data?.createChannel?.channelReferenceId}`)
     } catch (error) {
       return ErrorMessage
     }
@@ -58,7 +63,7 @@ function CreateChannel({ isOpen, onClose }: CreateChannelProps) {
               <FormControl>
                 <FormLabel htmlFor="channel-name">Name</FormLabel>
                 <Input
-                  onChange={e => setConnectedChannel({ ...channel, name: e.target.value })}
+                  onChange={e => setChannel({ ...channel, name: e.target.value })}
                   id="channel-name"
                   placeholder="onboarding"
                 />
@@ -66,7 +71,7 @@ function CreateChannel({ isOpen, onClose }: CreateChannelProps) {
               <FormControl>
                 <FormLabel htmlFor="channel-description">Description</FormLabel>
                 <Input
-                  onChange={e => setConnectedChannel({ ...channel, description: e.target.value })}
+                  onChange={e => setChannel({ ...channel, description: e.target.value })}
                   id="channel-description"
                   placeholder="Come here to get resources and help"
                 />

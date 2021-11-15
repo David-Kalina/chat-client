@@ -1,7 +1,11 @@
 mutation ConnectToServer($serverReferenceId: String!) {
   connectToServer(serverReferenceId: $serverReferenceId) {
-    name
-    id
-    serverReferenceId
+    server {
+      id
+      name
+      id
+      serverReferenceId
+    }
+    channelReferenceId
   }
 }

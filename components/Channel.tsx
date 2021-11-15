@@ -1,4 +1,4 @@
-import { Box, Flex, Text } from '@chakra-ui/react'
+import { Box, Flex, Text, useToast } from '@chakra-ui/react'
 import { useRouter } from 'next/dist/client/router'
 import React from 'react'
 import { FaCircle } from 'react-icons/fa'
@@ -16,6 +16,7 @@ interface Props {
 function Channel({ channel }: Props) {
   const [isEditOpen, setEditToggle] = useToggle(false)
   const [isInviteOpen, setInviteToggle] = useToggle(false)
+  const toast = useToast()
   const router = useRouter()
 
   const onCloseEdit = () => {
@@ -29,8 +30,6 @@ function Channel({ channel }: Props) {
   const [mutation, _] = useConnectToChannelMutation()
   const { setConnectedChannel, connectedChannel } = useServer()
 
-  console.log(connectedChannel)
-
   const connectToChannel = async () => {
     const response = await mutation({
       variables: {
@@ -39,6 +38,13 @@ function Channel({ channel }: Props) {
     })
     setConnectedChannel(response?.data?.connectToChannel!)
     router.push(`/channel/${response?.data?.connectToChannel.channelReferenceId}`)
+    toast({
+      position: 'top',
+      title: 'Connected to channel',
+      description: `You are now connected to ${response?.data?.connectToChannel.name}`,
+      status: 'success',
+      duration: 500,
+    })
   }
 
   return (
@@ -46,7 +52,7 @@ function Channel({ channel }: Props) {
       onClick={connectToChannel}
       h="40px"
       bg={
-        channel.channelReferenceId === connectedChannel.channelReferenceId ? '#27292d' : undefined
+        channel?.channelReferenceId === connectedChannel?.channelReferenceId ? '#27292d' : undefined
       }
       p="12px"
       align="center"
@@ -55,7 +61,16 @@ function Channel({ channel }: Props) {
       key={channel.id}
     >
       <Flex align="center">
-        <FaCircle />
+        <Box
+          w="3"
+          h="3"
+          borderRadius="full"
+          bg={
+            connectedChannel?.channelReferenceId === channel?.channelReferenceId
+              ? 'green.200'
+              : 'gray.400'
+          }
+        />
         <Text ml="1rem" fontWeight="bold" fontSize="md">
           {channel.name}
         </Text>

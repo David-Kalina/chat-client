@@ -4,10 +4,7 @@ import React from 'react'
 import { AiOutlineDelete } from 'react-icons/ai'
 import { BiExit } from 'react-icons/bi'
 import { FaCog } from 'react-icons/fa'
-import {
-  useDeleteServerMutation,
-  useLeaveServerMutation
-} from '../generated/graphql'
+import { useDeleteServerMutation, useLeaveServerMutation } from '../generated/graphql'
 
 function ServerMenu() {
   const [leaveServerMutation] = useLeaveServerMutation()
@@ -25,6 +22,7 @@ function ServerMenu() {
     await deleteServerMutation({
       update(cache) {
         cache.evict({ fieldName: 'servers' })
+        cache.evict({ fieldName: 'channels' })
       },
     })
   }
@@ -44,7 +42,7 @@ function ServerMenu() {
           <MenuItem onClick={leaveServer}>
             <Flex align="center">
               <BiExit />
-              <Text ml="6px">Delete Server</Text>
+              <Text ml="6px">Leave Server</Text>
             </Flex>
           </MenuItem>
         </MenuList>

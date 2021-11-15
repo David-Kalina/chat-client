@@ -12,12 +12,6 @@ function ChannelBlock() {
     variables: { serverReferenceId: connectedServer.serverReferenceId || '' },
   })
 
-  React.useEffect(() => {
-    if (!loading && !error && data && data.channels && data.channels.length > 0) {
-      setConnectedChannel(data?.channels[0])
-    }
-  }, [setConnectedChannel, data, loading, error])
-
   return (
     <Box w="100%">
       <Flex align="center">
@@ -31,7 +25,7 @@ function ChannelBlock() {
       <Collapse startingHeight={0} in={isOpen && !!data?.channels?.length}>
         <VStack align="start" spacing={4} alignItems="stretch" mt="1rem">
           {data?.channels?.map(channel => (
-            <Channel key={channel.channelId} channel={channel} />
+            <Channel key={channel.channelReferenceId} channel={channel as any} />
           ))}
         </VStack>
       </Collapse>

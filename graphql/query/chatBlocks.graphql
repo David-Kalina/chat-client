@@ -1,5 +1,5 @@
-query ChatBlocks {
-  chatBlocks {
+query ChatBlocks($channelReferenceId: String!) {
+  chatBlocks(channelReferenceId: $channelReferenceId) {
     createdAt
     isMine
     user {

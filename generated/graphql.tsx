@@ -88,10 +88,10 @@ export type Message = {
 export type Mutation = {
   __typename?: 'Mutation';
   connectToChannel: Channel;
-  connectToServer: Server;
+  connectToServer: ServerResponse;
   createChannel: Channel;
   createMessage: Scalars['Boolean'];
-  createServer: Server;
+  createServer: ServerResponse;
   deleteChannel: Scalars['Boolean'];
   deleteServer: Scalars['Boolean'];
   editChannel: Channel;
@@ -185,6 +185,11 @@ export type QueryChannelsArgs = {
 };
 
 
+export type QueryChatBlocksArgs = {
+  channelReferenceId: Scalars['String'];
+};
+
+
 export type QueryServerArgs = {
   serverReferenceId: Scalars['String'];
 };
@@ -203,6 +208,12 @@ export type Server = {
   serverReferenceId: Scalars['String'];
 };
 
+export type ServerResponse = {
+  __typename?: 'ServerResponse';
+  channelReferenceId: Scalars['String'];
+  server: Server;
+};
+
 export type ConnectToChannelMutationVariables = Exact<{
   channelReferenceId: Scalars['String'];
 }>;
@@ -215,7 +226,7 @@ export type ConnectToServerMutationVariables = Exact<{
 }>;
 
 
-export type ConnectToServerMutation = { __typename?: 'Mutation', connectToServer: { __typename?: 'Server', name: string, id: string, serverReferenceId: string } };
+export type ConnectToServerMutation = { __typename?: 'Mutation', connectToServer: { __typename?: 'ServerResponse', channelReferenceId: string, server: { __typename?: 'Server', id: string, name: string, serverReferenceId: string } } };
 
 export type CreateChannelMutationVariables = Exact<{
   options: CreateChannelInput;
@@ -236,7 +247,7 @@ export type CreateServerMutationVariables = Exact<{
 }>;
 
 
-export type CreateServerMutation = { __typename?: 'Mutation', createServer: { __typename?: 'Server', name: string, id: string, serverReferenceId: string } };
+export type CreateServerMutation = { __typename?: 'Mutation', createServer: { __typename?: 'ServerResponse', channelReferenceId: string, server: { __typename?: 'Server', id: string, name: string, serverReferenceId: string } } };
 
 export type DeleteChannelMutationVariables = Exact<{ [key: string]: never; }>;
 
@@ -307,7 +318,9 @@ export type ChannelsQueryVariables = Exact<{
 
 export type ChannelsQuery = { __typename?: 'Query', channels: Array<{ __typename?: 'Channel', name: string, id: string, channelReferenceId: string, description: string, inviteUrl: string }> };
 
-export type ChatBlocksQueryVariables = Exact<{ [key: string]: never; }>;
+export type ChatBlocksQueryVariables = Exact<{
+  channelReferenceId: Scalars['String'];
+}>;
 
 
 export type ChatBlocksQuery = { __typename?: 'Query', chatBlocks?: Array<{ __typename?: 'ChatBlock', createdAt: any, isMine?: boolean | null | undefined, user: { __typename?: 'LocalUser', globalUserReferenceId: string }, messages: Array<{ __typename?: 'Message', text: string }> }> | null | undefined };
@@ -381,9 +394,13 @@ export type ConnectToChannelMutationOptions = Apollo.BaseMutationOptions<Connect
 export const ConnectToServerDocument = gql`
     mutation ConnectToServer($serverReferenceId: String!) {
   connectToServer(serverReferenceId: $serverReferenceId) {
-    name
-    id
-    serverReferenceId
+    server {
+      id
+      name
+      id
+      serverReferenceId
+    }
+    channelReferenceId
   }
 }
     `;
@@ -485,9 +502,13 @@ export type CreateMessageMutationOptions = Apollo.BaseMutationOptions<CreateMess
 export const CreateServerDocument = gql`
     mutation CreateServer($options: CreateServerInput!) {
   createServer(options: $options) {
-    name
-    id
-    serverReferenceId
+    server {
+      id
+      name
+      id
+      serverReferenceId
+    }
+    channelReferenceId
   }
 }
     `;
@@ -888,8 +909,8 @@ export type ChannelsQueryHookResult = ReturnType<typeof useChannelsQuery>;
 export type ChannelsLazyQueryHookResult = ReturnType<typeof useChannelsLazyQuery>;
 export type ChannelsQueryResult = Apollo.QueryResult<ChannelsQuery, ChannelsQueryVariables>;
 export const ChatBlocksDocument = gql`
-    query ChatBlocks {
-  chatBlocks {
+    query ChatBlocks($channelReferenceId: String!) {
+  chatBlocks(channelReferenceId: $channelReferenceId) {
     createdAt
     isMine
     user {
@@ -914,10 +935,11 @@ export const ChatBlocksDocument = gql`
  * @example
  * const { data, loading, error } = useChatBlocksQuery({
  *   variables: {
+ *      channelReferenceId: // value for 'channelReferenceId'
  *   },
  * });
  */
-export function useChatBlocksQuery(baseOptions?: Apollo.QueryHookOptions<ChatBlocksQuery, ChatBlocksQueryVariables>) {
+export function useChatBlocksQuery(baseOptions: Apollo.QueryHookOptions<ChatBlocksQuery, ChatBlocksQueryVariables>) {
         const options = {...defaultOptions, ...baseOptions}
         return Apollo.useQuery<ChatBlocksQuery, ChatBlocksQueryVariables>(ChatBlocksDocument, options);
       }

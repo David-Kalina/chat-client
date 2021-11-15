@@ -37,7 +37,7 @@ function InviteUser({ isOpen, onClose }: InviteUserProps) {
             <InputGroup size="md">
               <Input
                 pr="4.5rem"
-                defaultValue={`http://localhost:3000/${connectedChannel.inviteUrl}`}
+                defaultValue={`http://localhost:3000/${connectedChannel?.inviteUrl}`}
               />
               <InputRightElement width="4.5rem">
                 <Button
@@ -46,7 +46,7 @@ function InviteUser({ isOpen, onClose }: InviteUserProps) {
                   size="sm"
                   onClick={() => {
                     navigator.clipboard.writeText(
-                      `http://localhost:3000/${connectedChannel.inviteUrl}`
+                      `http://localhost:3000/${connectedChannel?.inviteUrl}`
                     )
                     setToggle(true)
                   }}

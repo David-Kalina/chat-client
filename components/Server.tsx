@@ -1,4 +1,6 @@
-import { Flex } from '@chakra-ui/layout'
+import { Box, Flex } from '@chakra-ui/layout'
+import { useToast } from '@chakra-ui/toast'
+import router, { useRouter } from 'next/router'
 import React from 'react'
 import { useServer } from '../contexts/ServerContext'
 import { Server, useConnectToServerMutation } from '../generated/graphql'
@@ -8,7 +10,9 @@ interface ServerProps {
 }
 
 function Server({ server }: ServerProps) {
+  const router = useRouter()
   const { connectedServer, setConnectedServer } = useServer()
+  const toast = useToast()
 
   const [mutation, _] = useConnectToServerMutation()
 
@@ -19,8 +23,21 @@ function Server({ server }: ServerProps) {
           serverReferenceId: server.serverReferenceId,
         },
       })
-      setConnectedServer(response?.data?.connectToServer!)
+      setConnectedServer(response?.data?.connectToServer.server!)
+      if (response?.data?.connectToServer?.channelReferenceId) {
+        router.push(`/channel/${response?.data?.connectToServer?.channelReferenceId}`)
+      } else {
+        router.push(`/`)
+      }
+      toast({
+        position: 'top',
+        title: 'Connected to server',
+        description: `${server.serverReferenceId}`,
+        status: 'success',
+        duration: 2000,
+      })
     } catch (error) {
+      console.log(error)
       return error
     }
   }
@@ -29,17 +46,25 @@ function Server({ server }: ServerProps) {
     <Flex
       align="center"
       justify="center"
+      pos="relative"
       onClick={connectToServer}
       w="14"
       h="14"
       borderRadius="md"
-      border={
-        server.serverReferenceId === connectedServer.serverReferenceId
-          ? '1px solid yellow'
-          : '1px solid red'
-      }
+      border="1px solid gray"
     >
       {server.name}
+      <Box
+        w="2"
+        h="2"
+        bg={
+          server.serverReferenceId === connectedServer.serverReferenceId ? 'green.300' : 'gray.400'
+        }
+        pos="absolute"
+        bottom="-3px"
+        right="-2px"
+        borderRadius="full"
+      />
     </Flex>
   )
 }

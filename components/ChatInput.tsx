@@ -13,6 +13,9 @@ function ChatInput() {
       variables: {
         text,
       },
+      update: cache => {
+        cache.evict({ fieldName: 'chatBlocks' })
+      },
     })
     setText('')
   }

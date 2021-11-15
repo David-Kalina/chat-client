@@ -1,7 +1,11 @@
 mutation CreateServer($options: CreateServerInput!) {
   createServer(options: $options) {
-    name
-    id
-    serverReferenceId
+    server {
+      id
+      name
+      id
+      serverReferenceId
+    }
+    channelReferenceId
   }
 }

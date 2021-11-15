@@ -17,7 +17,7 @@ function AddServer() {
         w="14"
         h="14"
         borderRadius="md"
-        border="1px solid yellow"
+        border="1px solid gray"
         justify="center"
         align="center"
       >

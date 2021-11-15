@@ -10,8 +10,10 @@ import {
   ModalFooter,
   ModalHeader,
   ModalOverlay,
+  useToast,
   VStack,
 } from '@chakra-ui/react'
+import { useRouter } from 'next/router'
 import React from 'react'
 import { useServer } from '../contexts/ServerContext'
 import { useCreateServerMutation } from '../generated/graphql'
@@ -23,28 +25,42 @@ interface CreateServerProps {
 
 function CreateServer({ isOpen, onClose }: CreateServerProps) {
   const [name, setName] = React.useState('')
-  const { setConnectedServer } = useServer()
+  const { setConnectedServer, connectedServer } = useServer()
   const [mutation, _] = useCreateServerMutation()
+  const router = useRouter()
+  const toast = useToast()
 
   const submit = async () => {
-    if (name.length > 0) {
-      const response = await mutation({
-        variables: { options: { name } },
-        update(cache, { data: mutation }) {
-          cache.modify({
-            fields: {
-              servers(existingServers, { readField }) {
-                const newServer = readField('createServer', mutation!)
-                return [...existingServers, newServer]
+    try {
+      if (name.length > 0) {
+        const response = await mutation({
+          variables: { options: { name } },
+          update(cache, { data: mutation }) {
+            cache.modify({
+              fields: {
+                servers(existingServers, { readField }) {
+                  const newServer = readField('createServer', mutation!)
+                  return [...existingServers, newServer]
+                },
               },
-            },
-          })
-        },
-      })
-      if (response.data?.createServer.serverId!) {
-        onClose()
-        setConnectedServer(response?.data?.createServer!)
+            })
+          },
+        })
+        toast({
+          position: 'top',
+          title: 'Server succsessfully created',
+          description: `${response.data?.createServer.server.serverReferenceId}`,
+          status: 'success',
+          duration: 2000,
+        })
+        if (response.data?.createServer.server.serverReferenceId) {
+          setConnectedServer(response?.data?.createServer.server!)
+          router.push(`/channel/${response?.data?.createServer?.channelReferenceId}`)
+          onClose()
+        }
       }
+    } catch (error) {
+      return error
     }
   }
 
