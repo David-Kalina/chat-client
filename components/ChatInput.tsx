@@ -2,21 +2,30 @@
 import { InputGroup, InputRightElement, Input } from '@chakra-ui/react'
 import React from 'react'
 import { RiSendPlaneFill } from 'react-icons/ri'
+import { useServer } from '../contexts/ServerContext'
+import { useSocket } from '../contexts/SocketContext'
 import { useCreateMessageMutation } from '../generated/graphql'
 
 function ChatInput() {
   const [text, setText] = React.useState('')
   const [mutation] = useCreateMessageMutation()
+  const { socket } = useSocket()
+  const { connectedChannel } = useServer()
 
-  const createMessage = async () => {
-    await mutation({
-      variables: {
-        text,
-      },
-      update: cache => {
-        cache.evict({ fieldName: 'chatBlocks' })
-      },
-    })
+  const sendMessage = async () => {
+    if (!text) return
+
+    try {
+      const response = await mutation({
+        variables: {
+          text,
+        },
+      })
+    } catch (error) {
+      console.log(error)
+    }
+
+    socket.emit('message', { channelId: connectedChannel.channelReferenceId })
     setText('')
   }
 
@@ -27,7 +36,7 @@ function ChatInput() {
       bg="#27292e"
       onKeyDown={e => {
         if (e.key === 'Enter') {
-          createMessage()
+          sendMessage()
         }
       }}
     >
@@ -42,7 +51,7 @@ function ChatInput() {
         }}
       />
       <InputRightElement width="2rem">
-        <RiSendPlaneFill onClick={createMessage} />
+        <RiSendPlaneFill onClick={sendMessage} />
       </InputRightElement>
     </InputGroup>
   )

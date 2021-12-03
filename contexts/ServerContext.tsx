@@ -6,6 +6,8 @@ interface Props {
   connectedServer: Server
   connectedChannel: Channel
   setConnectedChannel: (channel: Channel) => void
+  localUserId: string
+  setLocalUserId: (id: string) => void
   setConnectedServer: (server: Server) => void
 }
 
@@ -16,12 +18,15 @@ export function useServer(): Props {
 const ServerProvider = ({ children }: any) => {
   const [connectedServer, setConnectedServer] = React.useState('')
   const [connectedChannel, setConnectedChannel] = React.useState('')
+  const [localUserId, setLocalUserId] = React.useState('')
 
   const value = {
     connectedServer,
     connectedChannel,
     setConnectedServer,
     setConnectedChannel,
+    localUserId,
+    setLocalUserId,
   }
 
   return <ServerContext.Provider value={value}>{children}</ServerContext.Provider>

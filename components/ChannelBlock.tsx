@@ -12,6 +12,12 @@ function ChannelBlock() {
     variables: { serverReferenceId: connectedServer.serverReferenceId || '' },
   })
 
+  React.useEffect(() => {
+    if (data && data.channels && data.channels.length > 0) {
+      setConnectedChannel(data.channels[0]!)
+    }
+  }, [data, setConnectedChannel])
+
   return (
     <Box w="100%">
       <Flex align="center">

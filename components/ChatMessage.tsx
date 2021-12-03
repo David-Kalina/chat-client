@@ -11,6 +11,7 @@ function ChatMessage({ message, isMine }: ChatMessageInterface) {
     <Box
       textAlign={isMine ? 'right' : 'left'}
       mt="1rem"
+      fontSize="xl"
       minW="50px"
       p="0.5rem 1rem 0.5rem 1rem"
       bg={isMine ? '#387aff' : '#27292e'}

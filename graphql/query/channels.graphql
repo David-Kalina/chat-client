@@ -3,6 +3,7 @@ query Channels($serverReferenceId: String!) {
     name
     id
     channelReferenceId
+    serverReferenceId
     description
     inviteUrl
   }

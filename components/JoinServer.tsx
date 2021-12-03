@@ -13,7 +13,7 @@ function JoinServer({ serverReferenceId }: Props) {
     await mutation({ variables: { serverReferenceId } })
   }
 
-  return <Button onClick={join}>Join</Button>
+  return <Button w="100%" colorScheme="orange" onClick={join}>Join</Button>
 }
 
 export default JoinServer

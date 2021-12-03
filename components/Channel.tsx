@@ -3,6 +3,7 @@ import { useRouter } from 'next/dist/client/router'
 import React from 'react'
 import { FaCircle } from 'react-icons/fa'
 import { useServer } from '../contexts/ServerContext'
+import { useSocket } from '../contexts/SocketContext'
 import { Channel, useConnectToChannelMutation } from '../generated/graphql'
 import useToggle from '../hooks/useHook'
 import ChannelSettings from './ChannelSettings'
@@ -19,6 +20,8 @@ function Channel({ channel }: Props) {
   const toast = useToast()
   const router = useRouter()
 
+  const { socket } = useSocket()
+
   const onCloseEdit = () => {
     setEditToggle(false)
   }
@@ -28,23 +31,29 @@ function Channel({ channel }: Props) {
   }
 
   const [mutation, _] = useConnectToChannelMutation()
-  const { setConnectedChannel, connectedChannel } = useServer()
+  const { setConnectedChannel, connectedChannel, setLocalUserId } = useServer()
 
   const connectToChannel = async () => {
+    socket.emit('join', { channelId: channel.channelReferenceId })
+
+    // if (connectedChannel?.id !== channel.id) {
     const response = await mutation({
       variables: {
         channelReferenceId: channel.channelReferenceId,
       },
     })
-    setConnectedChannel(response?.data?.connectToChannel!)
-    router.push(`/channel/${response?.data?.connectToChannel.channelReferenceId}`)
+    setConnectedChannel(response?.data?.connectToChannel.channel!)
+    setLocalUserId(response?.data?.connectToChannel.localUserId!)
+    router.push(`/channel/${response?.data?.connectToChannel.channel.channelReferenceId}`)
     toast({
       position: 'top',
       title: 'Connected to channel',
-      description: `You are now connected to ${response?.data?.connectToChannel.name}`,
+      description: `You are now connected to ${response?.data?.connectToChannel.channel.name}`,
       status: 'success',
       duration: 500,
     })
+
+    // }
   }
 
   return (

@@ -5,6 +5,7 @@ query ChatBlocks($channelReferenceId: String!) {
     user {
       globalUserReferenceId
     }
+    userReferenceId
     messages {
       text
     }

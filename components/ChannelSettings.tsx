@@ -26,7 +26,13 @@ function ChannelMenu() {
     <>
       <Flex align="center">
         <Menu>
-          <MenuButton bg="inherit" as={IconButton} ml="1rem" icon={<FaCog />}>
+          <MenuButton
+            onClick={e => e.stopPropagation()}
+            bg="inherit"
+            as={IconButton}
+            ml="1rem"
+            icon={<FaCog />}
+          >
             Settings
           </MenuButton>
           <MenuList>

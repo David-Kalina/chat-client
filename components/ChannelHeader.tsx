@@ -1,14 +1,28 @@
 import { Avatar } from '@chakra-ui/avatar'
 import { Box, Flex, HStack, Text } from '@chakra-ui/layout'
+import { useRouter } from 'next/router'
 import React from 'react'
-import { FaCircle } from 'react-icons/fa'
 import { useServer } from '../contexts/ServerContext'
+import { useSocket } from '../contexts/SocketContext'
 import { useChannelQuery } from '../generated/graphql'
 
 function ChannelHeader() {
   const { connectedChannel } = useServer()
+  const router = useRouter()
+  const { id } = router.query
+
+  const [connectedUsers, setConnectedUsers] = React.useState([])
+
+  const { socket } = useSocket()
+
+  React.useEffect(() => {
+    socket?.on('numberOfConnectedUsers', data => {
+      setConnectedUsers(data.data)
+    })
+  }, [socket])
+
   const { data, loading, error } = useChannelQuery({
-    variables: { channelReferenceId: connectedChannel?.channelReferenceId || '' },
+    variables: { channelReferenceId: (id as string) || '' },
   })
 
   const channel = data?.channel
@@ -18,7 +32,16 @@ function ChannelHeader() {
       {!loading && !error ? (
         <>
           <Flex align="center" w="50%">
-            <FaCircle />
+            <Box
+              w="3"
+              h="3"
+              bg={
+                channel?.channelReferenceId === connectedChannel?.channelReferenceId
+                  ? 'green.200'
+                  : undefined
+              }
+              borderRadius="full"
+            />
             <Text ml="1rem" textTransform="capitalize" fontSize="2xl">
               {channel?.name}
             </Text>
@@ -26,15 +49,15 @@ function ChannelHeader() {
               {channel?.description}
             </Text>
           </Flex>
-          {/* <HStack>
-            <Avatar borderRadius="sm" size="xs" />
-            <Avatar borderRadius="sm" size="xs" />
-            <Avatar borderRadius="sm" size="xs" />
-            <Avatar borderRadius="sm" size="xs" />
+          <HStack>
+            {connectedUsers.map(user => (
+              <Avatar key={user} borderRadius="sm" size="xs" />
+            ))}
+
             <Box borderRadius="sm" w="23px" h="23px">
-              {24}
+              {connectedUsers.length}
             </Box>
-          </HStack> */}
+          </HStack>
         </>
       ) : (
         <Box>Loading</Box>

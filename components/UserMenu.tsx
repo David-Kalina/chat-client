@@ -62,7 +62,7 @@ function UserMenu() {
   return (
     <Menu direction="rtl">
       <MenuButton as={IconButton} aria-label="Options" icon={<FaEllipsisH />} variant="outline" />
-      <MenuList>
+      <MenuList bg="#161819">
         <MenuItem
           alignItems="center"
           onClick={() => {

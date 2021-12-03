@@ -41,6 +41,12 @@ export type ChatBlock = {
   userReferenceId: Scalars['String'];
 };
 
+export type ConnectResponse = {
+  __typename?: 'ConnectResponse';
+  channel: Channel;
+  localUserId: Scalars['String'];
+};
+
 export type CreateChannelInput = {
   description: Scalars['String'];
   name: Scalars['String'];
@@ -87,7 +93,7 @@ export type Message = {
 
 export type Mutation = {
   __typename?: 'Mutation';
-  connectToChannel: Channel;
+  connectToChannel: ConnectResponse;
   connectToServer: ServerResponse;
   createChannel: Channel;
   createMessage: Scalars['Boolean'];
@@ -210,7 +216,7 @@ export type Server = {
 
 export type ServerResponse = {
   __typename?: 'ServerResponse';
-  channelReferenceId: Scalars['String'];
+  channelReferenceId?: Maybe<Scalars['String']>;
   server: Server;
 };
 
@@ -219,14 +225,14 @@ export type ConnectToChannelMutationVariables = Exact<{
 }>;
 
 
-export type ConnectToChannelMutation = { __typename?: 'Mutation', connectToChannel: { __typename?: 'Channel', id: string, channelReferenceId: string, serverReferenceId: string, name: string, description: string, inviteUrl: string } };
+export type ConnectToChannelMutation = { __typename?: 'Mutation', connectToChannel: { __typename?: 'ConnectResponse', localUserId: string, channel: { __typename?: 'Channel', id: string, channelReferenceId: string, serverReferenceId: string, name: string, description: string, inviteUrl: string } } };
 
 export type ConnectToServerMutationVariables = Exact<{
   serverReferenceId: Scalars['String'];
 }>;
 
 
-export type ConnectToServerMutation = { __typename?: 'Mutation', connectToServer: { __typename?: 'ServerResponse', channelReferenceId: string, server: { __typename?: 'Server', id: string, name: string, serverReferenceId: string } } };
+export type ConnectToServerMutation = { __typename?: 'Mutation', connectToServer: { __typename?: 'ServerResponse', channelReferenceId?: string | null | undefined, server: { __typename?: 'Server', id: string, name: string, serverReferenceId: string } } };
 
 export type CreateChannelMutationVariables = Exact<{
   options: CreateChannelInput;
@@ -247,7 +253,7 @@ export type CreateServerMutationVariables = Exact<{
 }>;
 
 
-export type CreateServerMutation = { __typename?: 'Mutation', createServer: { __typename?: 'ServerResponse', channelReferenceId: string, server: { __typename?: 'Server', id: string, name: string, serverReferenceId: string } } };
+export type CreateServerMutation = { __typename?: 'Mutation', createServer: { __typename?: 'ServerResponse', channelReferenceId?: string | null | undefined, server: { __typename?: 'Server', id: string, name: string, serverReferenceId: string } } };
 
 export type DeleteChannelMutationVariables = Exact<{ [key: string]: never; }>;
 
@@ -316,14 +322,14 @@ export type ChannelsQueryVariables = Exact<{
 }>;
 
 
-export type ChannelsQuery = { __typename?: 'Query', channels: Array<{ __typename?: 'Channel', name: string, id: string, channelReferenceId: string, description: string, inviteUrl: string }> };
+export type ChannelsQuery = { __typename?: 'Query', channels: Array<{ __typename?: 'Channel', name: string, id: string, channelReferenceId: string, serverReferenceId: string, description: string, inviteUrl: string }> };
 
 export type ChatBlocksQueryVariables = Exact<{
   channelReferenceId: Scalars['String'];
 }>;
 
 
-export type ChatBlocksQuery = { __typename?: 'Query', chatBlocks?: Array<{ __typename?: 'ChatBlock', createdAt: any, isMine?: boolean | null | undefined, user: { __typename?: 'LocalUser', globalUserReferenceId: string }, messages: Array<{ __typename?: 'Message', text: string }> }> | null | undefined };
+export type ChatBlocksQuery = { __typename?: 'Query', chatBlocks?: Array<{ __typename?: 'ChatBlock', createdAt: any, isMine?: boolean | null | undefined, userReferenceId: string, user: { __typename?: 'LocalUser', globalUserReferenceId: string }, messages: Array<{ __typename?: 'Message', text: string }> }> | null | undefined };
 
 export type MeQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -356,12 +362,15 @@ export type ServersQuery = { __typename?: 'Query', servers: Array<{ __typename?:
 export const ConnectToChannelDocument = gql`
     mutation ConnectToChannel($channelReferenceId: String!) {
   connectToChannel(channelReferenceId: $channelReferenceId) {
-    id
-    channelReferenceId
-    serverReferenceId
-    name
-    description
-    inviteUrl
+    channel {
+      id
+      channelReferenceId
+      serverReferenceId
+      name
+      description
+      inviteUrl
+    }
+    localUserId
   }
 }
     `;
@@ -875,6 +884,7 @@ export const ChannelsDocument = gql`
     name
     id
     channelReferenceId
+    serverReferenceId
     description
     inviteUrl
   }
@@ -916,6 +926,7 @@ export const ChatBlocksDocument = gql`
     user {
       globalUserReferenceId
     }
+    userReferenceId
     messages {
       text
     }

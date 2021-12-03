@@ -1,6 +1,6 @@
 import { Box, Flex } from '@chakra-ui/layout'
 import { useToast } from '@chakra-ui/toast'
-import router, { useRouter } from 'next/router'
+import { useRouter } from 'next/router'
 import React from 'react'
 import { useServer } from '../contexts/ServerContext'
 import { Server, useConnectToServerMutation } from '../generated/graphql'

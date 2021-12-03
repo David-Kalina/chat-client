@@ -3,6 +3,7 @@ import { ChakraProvider, theme } from '@chakra-ui/react'
 import type { AppProps } from 'next/app'
 import AuthProvider from '../contexts/AuthContext'
 import ServerProvider from '../contexts/ServerContext'
+import SocketProvider from '../contexts/SocketContext'
 import '../styles/globals.css'
 
 const client = new ApolloClient({
@@ -17,7 +18,9 @@ function MyApp({ Component, pageProps }: AppProps) {
       <ApolloProvider client={client}>
         <AuthProvider>
           <ServerProvider>
-            <Component {...pageProps} />
+            <SocketProvider>
+              <Component {...pageProps} />
+            </SocketProvider>
           </ServerProvider>
         </AuthProvider>
       </ApolloProvider>
